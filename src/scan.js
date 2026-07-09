@@ -11,7 +11,7 @@ import { renderTable, renderRejectSummary } from './format.js';
 
 function parseArgs(argv) {
   const cfg = { ...DEFAULTS };
-  const flags = { json: false, mode: 'balanced', showRejects: false, noEnrich: false };
+  const flags = { json: false, mode: 'balanced', showRejects: false, noEnrich: false, atHigh: false };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
     const next = () => argv[++i];
@@ -19,6 +19,8 @@ function parseArgs(argv) {
       case '--json': flags.json = true; break;
       case '--rejects': flags.showRejects = true; break;
       case '--no-enrich': cfg.enrichDailyBars = false; break;
+      case '--at-high': flags.atHigh = true; break;
+      case '--high-tol': cfg.nearHighTolerance = Number(next()) / 100; break;
       case '--mode': flags.mode = next(); break;
       case '--min-change': cfg.minChangePct = Number(next()); break;
       case '--cap-min': cfg.marketCapMin = Number(next()); break;
@@ -54,6 +56,8 @@ Usage: node src/scan.js [options]
   --scan-size <n>   raw gainers to pull before filtering        (default ${DEFAULTS.scanSize})
   --max-enrich <n>  max survivors to verify with daily bars     (default ${DEFAULTS.maxEnrich})
   --top <n>         rows to print                               (default ${DEFAULTS.topN})
+  --at-high         keep ONLY names at/near a new 52-week high (quality filter)
+  --high-tol <pct>  how close to the 52w high counts as "at high"  (default 0.5)
   --no-enrich       skip exact daily-bar verification (faster, uses perf proxy)
   --rejects         print a summary of why names were dropped
   --json            emit machine-readable JSON instead of a table
@@ -100,7 +104,15 @@ async function main() {
         log(`  ⚠ ${sized.length - cfg.maxEnrich} names beyond --max-enrich use the perf proxy`);
     }
 
-    const { survivors, rejected } = runPipeline(sized, cfg, flags.mode);
+    let { survivors, rejected } = runPipeline(sized, cfg, flags.mode);
+    if (flags.atHigh) {
+      const before = survivors.length;
+      survivors = survivors.filter((r) => r.nearHigh);
+      log(
+        `▶ --at-high: keeping only names at/within ${(cfg.nearHighTolerance * 100).toFixed(1)}% ` +
+          `of a new 52-week high (${survivors.length}/${before})`
+      );
+    }
     payload = { timestamp, mode: flags.mode, scanned: rows.length, survivors, rejected };
   } finally {
     await browser.close();
