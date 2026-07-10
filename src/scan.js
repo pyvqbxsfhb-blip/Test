@@ -7,6 +7,7 @@ import {
   getDailyBars,
 } from './tradingview.js';
 import { runPipeline, assessTrend, passesSize } from './pipeline.js';
+import { momentumScore } from './momentum.js';
 import { renderTable, renderRejectSummary } from './format.js';
 
 function parseArgs(argv) {
@@ -113,6 +114,9 @@ async function main() {
     }
 
     let { survivors, rejected } = runPipeline(sized, cfg, flags.mode);
+    // Signed price-only momentum score from the candles already captured.
+    for (const r of survivors)
+      r.momScore = r._dailyCloses ? momentumScore(r._dailyCloses).score : null;
     if (flags.excludeSectors.length) {
       const before = survivors.length;
       survivors = survivors.filter(
@@ -155,6 +159,7 @@ async function main() {
       trendingUp: r.trendingUp,
       inAntiPumpBand: r.inAntiPumpBand,
       score: r.score,
+      momScore: r.momScore,
     }));
     console.log(
       JSON.stringify(
