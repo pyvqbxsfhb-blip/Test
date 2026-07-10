@@ -117,11 +117,11 @@ async function main() {
   // ---- momentum snapshot as of --asof ----
   console.log(`\n=== MOMENTUM as of ${asof || 'latest'} (price-only) ===`);
   console.log(
-    pad('SYM', 6) + pad('CLOSE', 9) + pad('ROC5', 8) + pad('ROC10', 8) +
-      pad('RSI', 6) + pad('EXT%', 7) + pad('UP', 4) + pad('DIV', 5) +
+    pad('SYM', 6) + pad('CLOSE', 9) + pad('ROC5', 7) + pad('VADJ', 6) +
+      pad('VOL', 6) + pad('CONS', 6) + pad('RSI', 5) + pad('%<HI', 6) +
       pad('SCORE', 7) + 'VERDICT'
   );
-  console.log('-'.repeat(100));
+  console.log('-'.repeat(104));
   const scored = syms
     .map((s) => ({ s, ms: momentumScore(series[s].candles), r: classify(series[s].candles) }))
     .sort((a, b) => b.ms.score - a.ms.score);
@@ -129,12 +129,12 @@ async function main() {
     console.log(
       pad(s, 6) +
         pad('$' + (r.price ?? 0).toFixed(2), 9) +
-        pad((r.roc5 ?? 0).toFixed(1), 8) +
-        pad((r.roc10 ?? 0).toFixed(1), 8) +
-        pad((r.rsi14 ?? 0).toFixed(0), 6) +
-        pad((r.extension20 ?? 0).toFixed(1), 7) +
-        pad(r.consecUp, 4) +
-        pad(r.divergence ? 'YES' : '-', 5) +
+        pad((r.roc5 ?? 0).toFixed(1), 7) +
+        pad((r.volAdjThrust ?? 0).toFixed(2), 6) +
+        pad((r.volRatio ?? 0).toFixed(2), 6) +
+        pad(r.upDayRatio == null ? '—' : (r.upDayRatio * 100).toFixed(0) + '%', 6) +
+        pad((r.rsi14 ?? 0).toFixed(0), 5) +
+        pad((r.pctBelow20High ?? 0).toFixed(1), 6) +
         pad(ms.score >= 0 ? '+' + ms.score : ms.score, 7) +
         r.verdict
     );

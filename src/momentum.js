@@ -147,6 +147,44 @@ export function bearishDivergence(closes, period = 14, look = 20) {
   );
 }
 
+// Fraction of up-days over the last n bars (climb consistency).
+export function upDayRatio(closes, n = 10) {
+  if (closes.length < n + 1) return null;
+  let up = 0;
+  for (let i = closes.length - n; i < closes.length; i++) if (closes[i] > closes[i - 1]) up++;
+  return up / n;
+}
+
+// Recent avg volume vs the prior stretch — >1 means the move has participation.
+export function volumeRatio(candles, recent = 5, base = 15) {
+  if (candles.length < recent + base || candles[0].v == null) return null;
+  const avg = (arr) => arr.reduce((s, b) => s + (b.v || 0), 0) / arr.length;
+  const r = avg(candles.slice(-recent));
+  const b = avg(candles.slice(-recent - base, -recent));
+  if (!b) return null;
+  return r / b;
+}
+
+// % below the 20-day high (0 = at the high, breakout).
+export function pctBelow20High(candles) {
+  const seg = candles.slice(-20);
+  if (!seg.length) return null;
+  const hi = Math.max(...seg.map((b) => b.h ?? b.c));
+  if (!hi) return null;
+  return (1 - candles[candles.length - 1].c / hi) * 100;
+}
+
+// Volatility-adjusted increment: recent % move per unit of ATR% (clean thrust).
+export function volAdjThrust(candles, n = 5) {
+  const closes = candles.map((b) => b.c);
+  const r = roc(closes, n);
+  const a = atr(candles, 14);
+  const px = closes[closes.length - 1];
+  if (r == null || !a || !px) return null;
+  const atrPct = (a / px) * 100;
+  return atrPct ? r / atrPct : null;
+}
+
 // ---------- report + classifier ----------
 export function report(candles) {
   const closes = closesOf(candles);
@@ -170,6 +208,10 @@ export function report(candles) {
     pullbackATR: pullbackDepthATR(candles, 10),
     closeLoc: typeof last === 'object' ? closeLocation(last) : null,
     divergence: bearishDivergence(closes, 14, 20),
+    upDayRatio: upDayRatio(closes, 10),
+    volRatio: volumeRatio(candles),
+    pctBelow20High: pctBelow20High(candles),
+    volAdjThrust: volAdjThrust(candles, 5),
     nDays: candles.length,
   };
 }
@@ -271,6 +313,12 @@ export function momentumScore(candles) {
     accel: 0.6 * clamp(accel, -25, 25), // fresh acceleration vs fading
     structure:
       (r.stacked ? 6 : 0) + (r.slope20 > 0 ? 4 : 0) + 1.0 * clamp(r.consecUp || 0, 0, 6),
+    // --- added dimensions (rank the increment by quality/participation) ---
+    volAdjThrust: r.volAdjThrust != null ? clamp(r.volAdjThrust, -3, 3) * 4 : 0, // clean thrust per ATR  ±12
+    volume: r.volRatio != null ? clamp(r.volRatio - 1, -0.6, 0.6) * 12 : 0, // participation  ±7
+    consistency: r.upDayRatio != null ? (r.upDayRatio - 0.5) * 20 : 0, // steady climb  ±10
+    breakout:
+      r.pctBelow20High == null ? 0 : r.pctBelow20High <= 1 ? 6 : r.pctBelow20High > 10 ? -4 : 0,
   };
 
   // Exhaustion / fade drag (nonlinear in RSI: overbought bites hard).
@@ -289,8 +337,7 @@ export function momentumScore(candles) {
   if ((r.consecUp || 0) === 0 && roc5 < 8) ex += 10; // stalling / rolling over
   parts.exhaustion = -ex;
 
-  const raw =
-    parts.thrust + parts.medium + parts.accel + parts.structure + parts.exhaustion;
+  const raw = Object.values(parts).reduce((s, v) => s + v, 0);
   return { score: Math.round(clamp(raw, -100, 100)), parts, report: r };
 }
 
