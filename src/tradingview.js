@@ -207,7 +207,7 @@ export async function getDailyBars(page, fullSymbol, count = 40, timeoutMs = 120
             ]);
           };
 
-          let closes = null;
+          let ohlc = null;
           ws.onmessage = (ev) => {
             const data = ev.data;
             // Reply to heartbeats: frames like ~m~N~m~~h~M
@@ -231,15 +231,22 @@ export async function getDailyBars(page, fullSymbol, count = 40, timeoutMs = 120
                 const s = series && series.s;
                 if (Array.isArray(s) && s.length) {
                   // each entry: { i, v:[time, open, high, low, close, volume] }
-                  closes = s
-                    .map((x) => ({ t: x.v[0], c: x.v[4] }))
-                    .filter((x) => Number.isFinite(x.c))
+                  ohlc = s
+                    .map((x) => ({
+                      t: x.v[0],
+                      o: x.v[1],
+                      h: x.v[2],
+                      l: x.v[3],
+                      c: x.v[4],
+                      v: x.v[5],
+                    }))
+                    .filter((b) => Number.isFinite(b.c))
                     .sort((a, b) => a.t - b.t);
                 }
               }
               if (obj.m === 'series_completed' || obj.m === 'symbol_error') {
                 clearTimeout(timer);
-                return done(closes && closes.length ? closes : null);
+                return done(ohlc && ohlc.length ? ohlc : null);
               }
             }
           };
