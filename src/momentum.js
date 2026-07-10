@@ -251,6 +251,49 @@ export function classify(candles) {
   return { ...r, continuation: cont, fadeRisk: fade, verdict, notes: why };
 }
 
+// Signed NET-MOMENTUM score (~ -100 .. +100), centered on zero:
+//   positive = momentum favourable (thrust + acceleration + structure)
+//   negative = exhausting or stalling (overbought/stretched/divergent/dead)
+// Built so a fresh, persistent riser scores high, a slow-but-intact trend
+// scores mildly positive, an over-extended/overbought name tips negative, and
+// a stalled one sinks. Weights are visible constants — tune them, don't trust
+// them blindly (fitting 4 names exactly would be overfitting).
+export function momentumScore(candles) {
+  const r = report(candles);
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const roc5 = r.roc5 ?? 0,
+    roc10 = r.roc10 ?? 0;
+  const accel = 2 * roc5 - roc10; // last 5 bars vs the 5 before them
+
+  const parts = {
+    thrust: 0.55 * clamp(roc5, -25, 25), // recent push
+    medium: 0.45 * clamp(roc10, -40, 40), // medium-term trend (keeps a strong resting trend positive)
+    accel: 0.6 * clamp(accel, -25, 25), // fresh acceleration vs fading
+    structure:
+      (r.stacked ? 6 : 0) + (r.slope20 > 0 ? 4 : 0) + 1.0 * clamp(r.consecUp || 0, 0, 6),
+  };
+
+  // Exhaustion / fade drag (nonlinear in RSI: overbought bites hard).
+  let ex = 0;
+  if (r.rsi14 != null) {
+    if (r.rsi14 >= 84) ex += 38;
+    else if (r.rsi14 >= 80) ex += 20;
+    else if (r.rsi14 >= 74) ex += 8;
+  }
+  if (r.extension20 != null) {
+    if (r.extension20 > 22) ex += 10;
+    else if (r.extension20 > 16) ex += 4;
+  }
+  if (r.divergence) ex += 20;
+  if (r.closeLoc != null && r.closeLoc <= 0.33) ex += 8;
+  if ((r.consecUp || 0) === 0 && roc5 < 8) ex += 10; // stalling / rolling over
+  parts.exhaustion = -ex;
+
+  const raw =
+    parts.thrust + parts.medium + parts.accel + parts.structure + parts.exhaustion;
+  return { score: Math.round(clamp(raw, -100, 100)), parts, report: r };
+}
+
 // Compare several named series side by side (what separates the risers from
 // the faders). names = { TICKER: candles[] }.
 export function compare(named) {
