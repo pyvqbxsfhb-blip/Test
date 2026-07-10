@@ -102,7 +102,7 @@ async function main() {
       log(`▶ verifying ${toEnrich.length} names with live daily bars (exact up-day counts) …`);
       let ok = 0;
       for (const r of toEnrich) {
-        const closes = await getDailyBars(page, r.fullSymbol, 40);
+        const closes = await getDailyBars(page, r.fullSymbol, 60);
         if (closes && closes.length) {
           r._dailyCloses = closes;
           ok++;

@@ -1,0 +1,67 @@
+{
+  "capturedAt": "2026-07-10T11:03:23.435Z",
+  "asofNote": "live scan prices at capture; momScore(A) from candles through prior close",
+  "scoreMode": "increment (A)",
+  "names": [
+    {
+      "symbol": "BBIO",
+      "name": "BridgeBio Pharma, Inc.",
+      "sector": "Health Technology",
+      "refPrice": 90.17,
+      "changePctAtCapture": 15.11553683135453,
+      "marketCap": 17676635524,
+      "momScoreA": 84,
+      "upDays": 11
+    },
+    {
+      "symbol": "SAH",
+      "name": "Sonic Automotive, Inc.",
+      "sector": "Retail Trade",
+      "refPrice": 95.31,
+      "changePctAtCapture": 8.29451198727417,
+      "marketCap": 3012186980.9999995,
+      "momScoreA": 63,
+      "upDays": 5
+    },
+    {
+      "symbol": "ANDG",
+      "name": "Andersen Group Inc.",
+      "sector": "Consumer Services",
+      "refPrice": 43.46,
+      "changePctAtCapture": 10.304568527918788,
+      "marketCap": 4908041207,
+      "momScoreA": 57,
+      "upDays": 1
+    },
+    {
+      "symbol": "PTRN",
+      "name": "Pattern Group Inc. - Series A",
+      "sector": "Commercial Services",
+      "refPrice": 29.4,
+      "changePctAtCapture": 6.483158275986958,
+      "marketCap": 5199862867,
+      "momScoreA": 37,
+      "upDays": 1
+    },
+    {
+      "symbol": "TXG",
+      "name": "10x Genomics, Inc.",
+      "sector": "Health Technology",
+      "refPrice": 43.1,
+      "changePctAtCapture": 15.025353616226322,
+      "marketCap": 5471811653,
+      "momScoreA": 35,
+      "upDays": 1
+    },
+    {
+      "symbol": "DFTX",
+      "name": "Definium Therapeutics, Inc.",
+      "sector": "Health Technology",
+      "refPrice": 48.45,
+      "changePctAtCapture": 6.906443071491621,
+      "marketCap": 6431410836,
+      "momScoreA": 26,
+      "upDays": 5
+    }
+  ]
+}
