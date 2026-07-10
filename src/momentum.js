@@ -293,52 +293,63 @@ export function classify(candles) {
   return { ...r, continuation: cont, fadeRisk: fade, verdict, notes: why };
 }
 
-// Signed NET-MOMENTUM score (~ -100 .. +100), centered on zero:
-//   positive = momentum favourable (thrust + acceleration + structure)
-//   negative = exhausting or stalling (overbought/stretched/divergent/dead)
-// Built so a fresh, persistent riser scores high, a slow-but-intact trend
-// scores mildly positive, an over-extended/overbought name tips negative, and
-// a stalled one sinks. Weights are visible constants — tune them, don't trust
-// them blindly (fitting 4 names exactly would be overfitting).
-export function momentumScore(candles) {
+// Signed momentum score (~ -100 .. +100). Three modes:
+//   'increment'   (A, default) — rank by SIZE + CLEANLINESS of the move; no
+//                 overbought/extension brake (accepts stretched names). Only
+//                 penalties are for the increment itself failing (divergence,
+//                 weak close, stall).
+//   'balanced'    (B) — increment rewarded, but overbought/extension still drag.
+//   'sustainable' (C) — increment rewarded, spikes on weak volume punished.
+// Weights are visible constants — tune, don't trust blindly.
+const MODE_WEIGHTS = {
+  increment: { thrust: 0.8, medium: 0.3, accel: 0.5, vadj: 6, vol: 15, cons: 24, brake: 'off' },
+  balanced: { thrust: 0.55, medium: 0.45, accel: 0.6, vadj: 4, vol: 12, cons: 20, brake: 'on' },
+  sustainable: { thrust: 0.5, medium: 0.35, accel: 0.4, vadj: 5, vol: 20, cons: 28, brake: 'weakvol' },
+};
+
+export function momentumScore(candles, mode = 'increment') {
   const r = report(candles);
+  const W = MODE_WEIGHTS[mode] || MODE_WEIGHTS.increment;
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const roc5 = r.roc5 ?? 0,
     roc10 = r.roc10 ?? 0;
   const accel = 2 * roc5 - roc10; // last 5 bars vs the 5 before them
 
   const parts = {
-    thrust: 0.55 * clamp(roc5, -25, 25), // recent push
-    medium: 0.45 * clamp(roc10, -40, 40), // medium-term trend (keeps a strong resting trend positive)
-    accel: 0.6 * clamp(accel, -25, 25), // fresh acceleration vs fading
-    structure:
-      (r.stacked ? 6 : 0) + (r.slope20 > 0 ? 4 : 0) + 1.0 * clamp(r.consecUp || 0, 0, 6),
-    // --- added dimensions (rank the increment by quality/participation) ---
-    volAdjThrust: r.volAdjThrust != null ? clamp(r.volAdjThrust, -3, 3) * 4 : 0, // clean thrust per ATR  ±12
-    volume: r.volRatio != null ? clamp(r.volRatio - 1, -0.6, 0.6) * 12 : 0, // participation  ±7
-    consistency: r.upDayRatio != null ? (r.upDayRatio - 0.5) * 20 : 0, // steady climb  ±10
+    thrust: W.thrust * clamp(roc5, -25, 25), // recent push (increment)
+    medium: W.medium * clamp(roc10, -40, 40), // medium-term trend
+    accel: W.accel * clamp(accel, -25, 25), // fresh acceleration vs fading
+    volAdjThrust: r.volAdjThrust != null ? clamp(r.volAdjThrust, -3, 4) * W.vadj : 0, // clean thrust per ATR
+    volume: r.volRatio != null ? clamp(r.volRatio - 1, -0.6, 0.8) * W.vol : 0, // participation
+    consistency: r.upDayRatio != null ? (r.upDayRatio - 0.5) * W.cons : 0, // steady climb
     breakout:
       r.pctBelow20High == null ? 0 : r.pctBelow20High <= 1 ? 6 : r.pctBelow20High > 10 ? -4 : 0,
+    structure:
+      (r.stacked ? 6 : 0) + (r.slope20 > 0 ? 4 : 0) + 1.0 * clamp(r.consecUp || 0, 0, 6),
   };
 
-  // Exhaustion / fade drag (nonlinear in RSI: overbought bites hard).
+  // Drag. In mode A the overbought/extension brake is OFF (we accept stretched
+  // names); only signs the increment is *failing* still count.
   let ex = 0;
-  if (r.rsi14 != null) {
-    if (r.rsi14 >= 84) ex += 38;
-    else if (r.rsi14 >= 80) ex += 20;
-    else if (r.rsi14 >= 74) ex += 8;
+  if (W.brake === 'on') {
+    if (r.rsi14 != null) {
+      if (r.rsi14 >= 84) ex += 38;
+      else if (r.rsi14 >= 80) ex += 20;
+      else if (r.rsi14 >= 74) ex += 8;
+    }
+    if (r.extension20 != null) {
+      if (r.extension20 > 22) ex += 10;
+      else if (r.extension20 > 16) ex += 4;
+    }
   }
-  if (r.extension20 != null) {
-    if (r.extension20 > 22) ex += 10;
-    else if (r.extension20 > 16) ex += 4;
-  }
-  if (r.divergence) ex += 20;
-  if (r.closeLoc != null && r.closeLoc <= 0.33) ex += 8;
-  if ((r.consecUp || 0) === 0 && roc5 < 8) ex += 10; // stalling / rolling over
+  if (W.brake === 'weakvol' && r.volRatio != null && r.volRatio < 0.9) ex += 12;
+  if (r.divergence) ex += mode === 'increment' ? 10 : 20; // increment weakening internally
+  if (r.closeLoc != null && r.closeLoc <= 0.33) ex += mode === 'increment' ? 6 : 8;
+  if ((r.consecUp || 0) === 0 && roc5 < 8) ex += mode === 'increment' ? 6 : 10; // stalling
   parts.exhaustion = -ex;
 
   const raw = Object.values(parts).reduce((s, v) => s + v, 0);
-  return { score: Math.round(clamp(raw, -100, 100)), parts, report: r };
+  return { score: Math.round(clamp(raw, -100, 100)), parts, mode, report: r };
 }
 
 // Compare several named series side by side (what separates the risers from
