@@ -104,13 +104,58 @@ default verifies the highest-change size-band survivors and flags the rest).
   times out cleanly falls back to the `wk-up~` proxy and is flagged — the run
   never fails because of one ticker.
 
+## Momentum scoring (price-only)
+
+Separate from the scanner's 10x pipeline, `src/momentum.js` grades a name's
+**price action alone** — no news, no fundamentals — to help time entries.
+
+- **Signals**: ROC, Wilder RSI, ATR, 20/50 SMA structure & slope, extension
+  above the 20-day MA, close-location-in-range, ATR-scaled pullback depth,
+  bearish RSI divergence, up-day consistency, volume participation,
+  volatility-adjusted thrust (ROC ÷ ATR), and distance to the 20-day high.
+- **`classify(candles)`** → an entry verdict: `NO-TREND` / `BUY-ZONE` /
+  `CONTINUATION` / `EXTENDED` / `FADE-RISK`.
+- **`momentumScore(candles, mode)`** → a single signed score (~ −100..+100) in
+  one of three modes:
+  - `increment` (default) — rank by **size + cleanliness** of the move;
+    overbought/extension brake **off** (accepts stretched names).
+  - `balanced` — increment rewarded, but overbought/extension still drag.
+  - `sustainable` — punishes spikes on weak volume.
+
+The scanner surfaces `momScore` (mode `increment`) in its `--json` output,
+computed from the candles captured during enrichment.
+
+## Comparing & monitoring
+
+```bash
+# Momentum snapshot + return-correlation matrix, backtestable to any date:
+node src/correlate.js DK EWTX SGHC XENE --asof 2026-07-09 --days 90
+
+# Freeze a scored watchlist to snapshots/<date>.json (durable across sessions),
+# then later grade whether the score predicted the moves:
+node src/monitor.js snapshots/2026-07-10.json
+```
+
+`monitor.js` reloads a baseline, pulls each name's latest price, shows the move
+since capture, and reports the **Spearman rank correlation** between the
+baseline score and the realized move (+1 = score predicted the ranking
+perfectly, 0 = no signal, −1 = inverted). It needs at least one session close
+*after* capture to have anything to grade.
+
 ## Layout
 
 ```
 src/
   scan.js         CLI entry / arg parsing / orchestration
-  tradingview.js  headless browser + live scanner fetch + daily-bar websocket
+  tradingview.js  headless browser + live scanner fetch + daily-bar (OHLCV) websocket
   pipeline.js     trend/size/liquidity filters, consecutive-up-days, 10x scoring
+  momentum.js     price-only signals, entry classifier, signed momentum score
+  correlate.js    as-of momentum snapshot + return-correlation matrix
+  monitor.js      grade a saved baseline against later prices (Spearman)
   format.js       table + reject-summary rendering
   config.js       default thresholds (all CLI-overridable)
+snapshots/        frozen scored watchlists for monitoring
 ```
+
+> ⚠️ Screening + momentum aids only — **not investment advice.** Confirm live
+> prices before acting.
