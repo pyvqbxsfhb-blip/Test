@@ -2,3 +2,7 @@ node_modules/
 *.log
 netlog*.json
 .DS_Store
+
+# transient scan/analysis outputs
+scan_*.json
+*.tmp.json
