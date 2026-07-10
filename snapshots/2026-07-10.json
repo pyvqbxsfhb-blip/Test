@@ -24,16 +24,6 @@
       "upDays": 5
     },
     {
-      "symbol": "ANDG",
-      "name": "Andersen Group Inc.",
-      "sector": "Consumer Services",
-      "refPrice": 43.46,
-      "changePctAtCapture": 10.304568527918788,
-      "marketCap": 4908041207,
-      "momScoreA": 57,
-      "upDays": 1
-    },
-    {
       "symbol": "PTRN",
       "name": "Pattern Group Inc. - Series A",
       "sector": "Commercial Services",
@@ -62,6 +52,12 @@
       "marketCap": 6431410836,
       "momScoreA": 26,
       "upDays": 5
+    }
+  ],
+  "excluded": [
+    {
+      "symbol": "ANDG",
+      "reason": "financial advisory (Andersen) — non-fintech preference"
     }
   ]
 }
