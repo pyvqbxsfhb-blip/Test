@@ -15,13 +15,14 @@ import { launchBrowser, openSite, scanGainers, getDailyBars } from './tradingvie
 import { momentumScore } from './momentum.js';
 import { DEFAULTS } from './config.js';
 
+const MODES = ['increment', 'balanced', 'sustainable']; // A, B, C
+
 function parse(argv) {
-  const o = { top: 20, enrich: 45, mode: 'increment', date: null };
+  const o = { top: 20, enrich: 55, date: null };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--top') o.top = Number(argv[++i]);
     else if (a === '--enrich') o.enrich = Number(argv[++i]);
-    else if (a === '--mode') o.mode = argv[++i];
     else if (a === '--date') o.date = argv[++i];
   }
   return o;
@@ -45,51 +46,57 @@ async function main() {
       (r) => r.marketCap >= DEFAULTS.marketCapMin && r.marketCap <= DEFAULTS.marketCapMax
     );
     const pool = sized.slice(0, o.enrich); // highest-change in-band names to score
-    process.stderr.write(`▶ scoring top ${pool.length} by momentum …\n`);
+    process.stderr.write(`▶ scoring top ${pool.length} in all 3 modes (A/B/C) …\n`);
     const scored = [];
     for (const r of pool) {
       const candles = await getDailyBars(page, r.fullSymbol, 60);
       if (!candles || candles.length < 20) continue;
       scored.push({
         symbol: r.symbol,
-        score: momentumScore(candles, o.mode).score,
         price: r.price,
         changePct: r.changePct,
         marketCap: r.marketCap,
         sector: r.sector,
+        mA: momentumScore(candles, 'increment').score,
+        mB: momentumScore(candles, 'balanced').score,
+        mC: momentumScore(candles, 'sustainable').score,
       });
     }
-    scored.sort((a, b) => b.score - a.score);
-    ranked = scored.slice(0, o.top).map((r, i) => ({ rank: i + 1, ...r }));
+    scored.sort((a, b) => b.mA - a.mA); // stored order by A (any mode re-sortable later)
+    ranked = scored;
   } finally {
     await b.close();
   }
 
-  const record = { date, capturedAt, scoreMode: o.mode, count: ranked.length, ranking: ranked };
+  const record = {
+    date,
+    capturedAt,
+    band: '500M-50B',
+    modes: { A: 'increment', B: 'balanced', C: 'sustainable' },
+    count: ranked.length,
+    names: ranked,
+  };
   const dailyPath = path.join(dir, `daily-${date}.json`);
   fs.writeFileSync(dailyPath, JSON.stringify(record, null, 2));
 
-  // Append to the time-series log (idempotent per date: drop existing lines for this date first).
+  // Time-series log — all 3 scores per (date,ticker). Idempotent per date.
   const histPath = path.join(dir, 'history.jsonl');
   let lines = fs.existsSync(histPath)
     ? fs.readFileSync(histPath, 'utf8').split('\n').filter((l) => l && !l.includes(`"date":"${date}"`))
     : [];
   for (const r of ranked)
-    lines.push(JSON.stringify({ date, symbol: r.symbol, rank: r.rank, score: r.score, price: r.price }));
+    lines.push(JSON.stringify({ date, symbol: r.symbol, price: r.price, mA: r.mA, mB: r.mB, mC: r.mC }));
   fs.writeFileSync(histPath, lines.join('\n') + '\n');
 
-  // Minimal ranked output (no commentary).
+  // Minimal output: top-N by each mode (no commentary).
   const pad = (s, n) => String(s).padEnd(n).slice(0, n);
-  console.log(`# ${date}  (mode ${o.mode})  -> ${dailyPath}`);
-  console.log(pad('RANK', 6) + pad('TICKER', 8) + pad('SCORE', 8) + pad('PRICE', 10) + 'CHG%');
-  for (const r of ranked)
-    console.log(
-      pad(r.rank, 6) +
-        pad(r.symbol, 8) +
-        pad((r.score >= 0 ? '+' : '') + r.score, 8) +
-        pad('$' + (r.price ?? 0).toFixed(2), 10) +
-        (r.changePct >= 0 ? '+' : '') + (r.changePct ?? 0).toFixed(1)
-    );
+  const topBy = (key) => [...ranked].sort((a, b) => b[key] - a[key]).slice(0, o.top);
+  console.log(`# ${date}  (${ranked.length} names, $500M-$50B)  -> ${dailyPath}`);
+  console.log(pad('RANK', 5) + pad('A:incr', 16) + pad('B:balanced', 16) + 'C:sustainable');
+  const A = topBy('mA'), B = topBy('mB'), C = topBy('mC');
+  const fmt = (r, k) => (r ? `${r.symbol} ${r[k] >= 0 ? '+' : ''}${r[k]}` : '');
+  for (let i = 0; i < o.top; i++)
+    console.log(pad(i + 1, 5) + pad(fmt(A[i], 'mA'), 16) + pad(fmt(B[i], 'mB'), 16) + fmt(C[i], 'mC'));
 }
 
 main().catch((e) => {

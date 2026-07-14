@@ -13,7 +13,7 @@ const days = fs
   .readdirSync(dir)
   .filter((f) => /^daily-\d{4}-\d{2}-\d{2}\.json$/.test(f))
   .sort()
-  .map((f) => JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')));
+  .map((f) => normalize(JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'))));
 
 if (!days.length) {
   console.error('No snapshots/daily-*.json found. Run: node src/daily.js');
@@ -23,9 +23,18 @@ if (!days.length) {
 const latest = days[days.length - 1];
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+// Back-compat: normalise a record's names and pick primary (A) score.
+function normalize(rec) {
+  const names = (rec.names || rec.ranking || []).map((r) => ({
+    ...r,
+    score: r.mA != null ? r.mA : r.score,
+  }));
+  return { ...rec, names };
+}
+
 // ---- ranked bar chart (latest day), server-rendered SVG ----
 function barChart(rec) {
-  const rows = rec.ranking;
+  const rows = [...rec.names].sort((a, b) => b.score - a.score).slice(0, 20);
   const W = 900, rowH = 26, padL = 150, padR = 60, padT = 8, padB = 8;
   const H = padT + padB + rows.length * rowH;
   const scores = rows.map((r) => r.score);
@@ -58,10 +67,10 @@ function barChart(rec) {
 function trendChart(days) {
   if (days.length < 2) return '';
   const dates = days.map((d) => d.date);
-  const track = latest.ranking.slice(0, 8).map((r) => r.symbol); // top 8 to keep readable
-  const byDay = days.map((d) => new Map(d.ranking.map((r) => [r.symbol, r.score])));
+  const track = latest.names.slice(0, 8).map((r) => r.symbol); // top 8 to keep readable
+  const byDay = days.map((d) => new Map(d.names.map((r) => [r.symbol, r.score])));
   const W = 900, H = 320, padL = 44, padR = 90, padT = 16, padB = 28;
-  const allScores = days.flatMap((d) => d.ranking.map((r) => r.score));
+  const allScores = days.flatMap((d) => d.names.map((r) => r.score));
   const lo = Math.min(...allScores, 0), hi = Math.max(...allScores);
   const x = (i) => padL + (i / (dates.length - 1 || 1)) * (W - padL - padR);
   const y = (v) => padT + (1 - (v - lo) / (hi - lo || 1)) * (H - padT - padB);
@@ -84,14 +93,17 @@ function trendChart(days) {
     </svg>`;
 }
 
+const sg = (v) => (v == null ? '—' : (v >= 0 ? '+' : '') + v);
 function table(rec) {
-  const rows = rec.ranking
+  const rows = [...rec.names]
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 20)
     .map(
-      (r) =>
-        `<tr><td>${r.rank}</td><td class="mono">${esc(r.symbol)}</td><td class="num">${r.score >= 0 ? '+' : ''}${r.score}</td><td class="num">$${(r.price ?? 0).toFixed(2)}</td><td class="num">${(r.changePct >= 0 ? '+' : '')}${(r.changePct ?? 0).toFixed(1)}%</td><td>${esc(r.sector || '')}</td></tr>`
+      (r, i) =>
+        `<tr><td>${i + 1}</td><td class="mono">${esc(r.symbol)}</td><td class="num a">${sg(r.mA)}</td><td class="num">${sg(r.mB)}</td><td class="num">${sg(r.mC)}</td><td class="num">$${(r.price ?? 0).toFixed(2)}</td><td class="num">${(r.changePct >= 0 ? '+' : '')}${(r.changePct ?? 0).toFixed(1)}%</td><td>${esc(r.sector || '')}</td></tr>`
     )
     .join('\n');
-  return `<table><thead><tr><th>#</th><th>Ticker</th><th>Score</th><th>Price</th><th>Chg</th><th>Sector</th></tr></thead><tbody>${rows}</tbody></table>`;
+  return `<table><thead><tr><th>#</th><th>Ticker</th><th>A</th><th>B</th><th>C</th><th>Price</th><th>Chg</th><th>Sector</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8">
@@ -115,10 +127,11 @@ const html = `<!doctype html><html lang="en"><head><meta charset="utf-8">
   .viz-root th,.viz-root td{padding:4px 8px;border-bottom:1px solid var(--grid);text-align:left}
   .viz-root th{color:var(--muted);font-weight:600} .viz-root .num,.viz-root .mono{text-align:right;font-variant-numeric:tabular-nums}
   .viz-root .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;text-align:left;font-weight:600}
+  .viz-root td.a{color:var(--pos);font-weight:700}
 </style>
 <h1>Daily momentum ranking — ${esc(latest.date)}</h1>
-<p class="sub">Mode: ${esc(latest.scoreMode)} · ${latest.count} names ($500M–$50B) · price-only score · not investment advice</p>
-<h2>Top ${latest.ranking.length} by momentum score</h2>
+<p class="sub">Ranked by Mode A (increment) · A/B/C scores in table · ${latest.count} names ($500M–$50B) · price-only · not investment advice</p>
+<h2>Top 20 by Mode A score</h2>
 ${barChart(latest)}
 ${trendChart(days)}
 <h2>Table</h2>

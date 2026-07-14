@@ -1,188 +1,563 @@
 {
   "date": "2026-07-14",
-  "capturedAt": "2026-07-14T11:35:07.790Z",
-  "scoreMode": "increment",
-  "count": 20,
-  "ranking": [
+  "capturedAt": "2026-07-14T11:44:01.962Z",
+  "band": "500M-50B",
+  "modes": {
+    "A": "increment",
+    "B": "balanced",
+    "C": "sustainable"
+  },
+  "count": 55,
+  "names": [
     {
-      "rank": 1,
       "symbol": "QTTB",
-      "score": 92,
       "price": 21.38,
       "changePct": 90.72256913470113,
       "marketCap": 506308604,
-      "sector": "Health Technology"
+      "sector": "Health Technology",
+      "mA": 92,
+      "mB": 73,
+      "mC": 84
     },
     {
-      "rank": 2,
       "symbol": "CNMD",
-      "score": 78,
       "price": 42.41,
       "changePct": 10.213097713097714,
       "marketCap": 1276930905,
-      "sector": "Health Technology"
+      "sector": "Health Technology",
+      "mA": 78,
+      "mB": 58,
+      "mC": 71
     },
     {
-      "rank": 3,
       "symbol": "VG",
-      "score": 76,
       "price": 13.36,
       "changePct": 9.150326797385615,
       "marketCap": 33191022001,
-      "sector": "Industrial Services"
+      "sector": "Industrial Services",
+      "mA": 76,
+      "mB": 62,
+      "mC": 65
     },
     {
-      "rank": 4,
       "symbol": "TCBK",
-      "score": 72,
       "price": 60.07,
       "changePct": 11.987322893363162,
       "marketCap": 1916869085,
-      "sector": "Finance"
+      "sector": "Finance",
+      "mA": 72,
+      "mB": 54,
+      "mC": 69
     },
     {
-      "rank": 5,
       "symbol": "PARR",
-      "score": 65,
       "price": 70.92,
       "changePct": 7.813925205229554,
       "marketCap": 3556231938,
-      "sector": "Energy Minerals"
+      "sector": "Energy Minerals",
+      "mA": 65,
+      "mB": 47,
+      "mC": 59
     },
     {
-      "rank": 6,
       "symbol": "SHAK",
-      "score": 65,
       "price": 62.18,
       "changePct": 6.109215017064843,
       "marketCap": 2660154920,
-      "sector": "Consumer Services"
+      "sector": "Consumer Services",
+      "mA": 65,
+      "mB": 57,
+      "mC": 57
     },
     {
-      "rank": 7,
       "symbol": "TOI",
-      "score": 62,
       "price": 6.25,
       "changePct": 6.112054329371822,
       "marketCap": 624893332,
-      "sector": "Health Services"
+      "sector": "Health Services",
+      "mA": 62,
+      "mB": 55,
+      "mC": 57
     },
     {
-      "rank": 8,
       "symbol": "CBZ",
-      "score": 59,
       "price": 40.47,
       "changePct": 7.0918232336596985,
       "marketCap": 2171164218,
-      "sector": "Commercial Services"
+      "sector": "Commercial Services",
+      "mA": 59,
+      "mB": 49,
+      "mC": 41
     },
     {
-      "rank": 9,
       "symbol": "PBF",
-      "score": 56,
       "price": 57.44,
       "changePct": 8.010530274539297,
       "marketCap": 6795638644,
-      "sector": "Energy Minerals"
+      "sector": "Energy Minerals",
+      "mA": 56,
+      "mB": 32,
+      "mC": 50
     },
     {
-      "rank": 10,
       "symbol": "RPD",
-      "score": 56,
       "price": 11.92,
       "changePct": 6.714413607878246,
       "marketCap": 796620992.9999999,
-      "sector": "Technology Services"
+      "sector": "Technology Services",
+      "mA": 56,
+      "mB": 19,
+      "mC": 59
     },
     {
-      "rank": 11,
       "symbol": "SMWB",
-      "score": 55,
       "price": 7.13,
       "changePct": 7.057057057057054,
       "marketCap": 624591861,
-      "sector": "Technology Services"
+      "sector": "Technology Services",
+      "mA": 55,
+      "mB": 33,
+      "mC": 50
     },
     {
-      "rank": 12,
       "symbol": "NOG",
-      "score": 51,
       "price": 20.36,
       "changePct": 9.935205183585312,
       "marketCap": 2214845499,
-      "sector": "Energy Minerals"
+      "sector": "Energy Minerals",
+      "mA": 51,
+      "mB": 42,
+      "mC": 39
     },
     {
-      "rank": 13,
       "symbol": "LZ",
-      "score": 49,
       "price": 7.72,
       "changePct": 6.482758620689652,
       "marketCap": 1325120717.9999998,
-      "sector": "Technology Services"
+      "sector": "Technology Services",
+      "mA": 49,
+      "mB": 31,
+      "mC": 49
     },
     {
-      "rank": 14,
       "symbol": "KELYA",
-      "score": 48,
       "price": 14.31,
       "changePct": 5.608856088560884,
       "marketCap": 527560339.99999994,
-      "sector": "Commercial Services"
+      "sector": "Commercial Services",
+      "mA": 48,
+      "mB": 36,
+      "mC": 29
     },
     {
-      "rank": 15,
       "symbol": "KOS",
-      "score": 47,
       "price": 2.44,
       "changePct": 16.190476190476183,
       "marketCap": 1447381853,
-      "sector": "Energy Minerals"
+      "sector": "Energy Minerals",
+      "mA": 47,
+      "mB": 41,
+      "mC": 41
     },
     {
-      "rank": 16,
       "symbol": "CVI",
-      "score": 44,
       "price": 33.46,
       "changePct": 8.040038747174693,
       "marketCap": 3363753834,
-      "sector": "Energy Minerals"
+      "sector": "Energy Minerals",
+      "mA": 44,
+      "mB": 34,
+      "mC": 23
     },
     {
-      "rank": 17,
       "symbol": "BRZE",
-      "score": 43,
       "price": 26.6,
       "changePct": 5.849582172701959,
       "marketCap": 2996002414,
-      "sector": "Technology Services"
+      "sector": "Technology Services",
+      "mA": 43,
+      "mB": 34,
+      "mC": 42
     },
     {
-      "rank": 18,
       "symbol": "SM",
-      "score": 42,
       "price": 29.89,
       "changePct": 7.47932398417836,
       "marketCap": 7166088586,
-      "sector": "Energy Minerals"
+      "sector": "Energy Minerals",
+      "mA": 42,
+      "mB": 35,
+      "mC": 33
     },
     {
-      "rank": 19,
       "symbol": "CLNE",
-      "score": 42,
       "price": 2.32,
       "changePct": 5.9360730593607265,
       "marketCap": 510921150,
-      "sector": "Utilities"
+      "sector": "Utilities",
+      "mA": 42,
+      "mB": 34,
+      "mC": 42
     },
     {
-      "rank": 20,
       "symbol": "ALIT",
-      "score": 41,
       "price": 20.84,
       "changePct": 6.218144750254836,
       "marketCap": 559806157.9999999,
-      "sector": "Technology Services"
+      "sector": "Technology Services",
+      "mA": 41,
+      "mB": 23,
+      "mC": 22
+    },
+    {
+      "symbol": "FIG",
+      "price": 23.65,
+      "changePct": 12.032212221695875,
+      "marketCap": 12496106073,
+      "sector": "Technology Services",
+      "mA": 40,
+      "mB": 32,
+      "mC": 39
+    },
+    {
+      "symbol": "TEAM",
+      "price": 96.16,
+      "changePct": 8.21516993022732,
+      "marketCap": 24402318715,
+      "sector": "Technology Services",
+      "mA": 40,
+      "mB": 36,
+      "mC": 22
+    },
+    {
+      "symbol": "PBT",
+      "price": 28.06,
+      "changePct": 7.099236641221372,
+      "marketCap": 1307842767,
+      "sector": "Miscellaneous",
+      "mA": 39,
+      "mB": 33,
+      "mC": 20
+    },
+    {
+      "symbol": "NSP",
+      "price": 48.39,
+      "changePct": 6.328279499011212,
+      "marketCap": 1847006685,
+      "sector": "Commercial Services",
+      "mA": 36,
+      "mB": 30,
+      "mC": 20
+    },
+    {
+      "symbol": "RHI",
+      "price": 35.59,
+      "changePct": 9.845679012345695,
+      "marketCap": 3640628767,
+      "sector": "Commercial Services",
+      "mA": 34,
+      "mB": 31,
+      "mC": 29
+    },
+    {
+      "symbol": "ANRO",
+      "price": 28.03,
+      "changePct": 5.853474320241695,
+      "marketCap": 983683183.0000001,
+      "sector": "Health Technology",
+      "mA": 34,
+      "mB": 31,
+      "mC": 32
+    },
+    {
+      "symbol": "BRAI",
+      "price": 6.43,
+      "changePct": 16.59111514052584,
+      "marketCap": 1325147358,
+      "sector": "Technology Services",
+      "mA": 29,
+      "mB": 23,
+      "mC": 27
+    },
+    {
+      "symbol": "FDS",
+      "price": 263.11,
+      "changePct": 6.474849257415725,
+      "marketCap": 9357649794.999998,
+      "sector": "Commercial Services",
+      "mA": 28,
+      "mB": 27,
+      "mC": 15
+    },
+    {
+      "symbol": "KRO",
+      "price": 6.46,
+      "changePct": 9.677419354838715,
+      "marketCap": 743243133,
+      "sector": "Process Industries",
+      "mA": 27,
+      "mB": 22,
+      "mC": 19
+    },
+    {
+      "symbol": "TALO",
+      "price": 14.23,
+      "changePct": 5.407407407407411,
+      "marketCap": 2375354225,
+      "sector": "Energy Minerals",
+      "mA": 25,
+      "mB": 21,
+      "mC": 8
+    },
+    {
+      "symbol": "ACDC",
+      "price": 5.2,
+      "changePct": 5.691056910569111,
+      "marketCap": 940787844,
+      "sector": "Industrial Services",
+      "mA": 24,
+      "mB": 20,
+      "mC": 17
+    },
+    {
+      "symbol": "CRGY",
+      "price": 9.99,
+      "changePct": 5.491024287222804,
+      "marketCap": 3299213583,
+      "sector": "Energy Minerals",
+      "mA": 23,
+      "mB": 19,
+      "mC": 2
+    },
+    {
+      "symbol": "EVCM",
+      "price": 10.82,
+      "changePct": 6.391347099311704,
+      "marketCap": 1914606508.0000002,
+      "sector": "Technology Services",
+      "mA": 21,
+      "mB": 19,
+      "mC": 6
+    },
+    {
+      "symbol": "PSNL",
+      "price": 15.04,
+      "changePct": 6.894100923951663,
+      "marketCap": 1575005338,
+      "sector": "Health Services",
+      "mA": 19,
+      "mB": 3,
+      "mC": 11
+    },
+    {
+      "symbol": "PLTK",
+      "price": 4.11,
+      "changePct": 7.3107049608355155,
+      "marketCap": 1563359864.0000002,
+      "sector": "Technology Services",
+      "mA": 18,
+      "mB": 6,
+      "mC": -8
+    },
+    {
+      "symbol": "TRUP",
+      "price": 27.37,
+      "changePct": 5.962059620596217,
+      "marketCap": 1193892354,
+      "sector": "Finance",
+      "mA": 18,
+      "mB": 18,
+      "mC": 5
+    },
+    {
+      "symbol": "TNDM",
+      "price": 16.25,
+      "changePct": 5.4510058403634,
+      "marketCap": 1113597603,
+      "sector": "Health Technology",
+      "mA": 18,
+      "mB": 16,
+      "mC": 1
+    },
+    {
+      "symbol": "APC",
+      "price": 20.17,
+      "changePct": 5.5468341182627015,
+      "marketCap": 959491399.0000001,
+      "sector": "Distribution Services",
+      "mA": 17,
+      "mB": 15,
+      "mC": -2
+    },
+    {
+      "symbol": "GTM",
+      "price": 3.08,
+      "changePct": 5.479452054794526,
+      "marketCap": 907731472.0000001,
+      "sector": "Technology Services",
+      "mA": 14,
+      "mB": 14,
+      "mC": -2
+    },
+    {
+      "symbol": "IT",
+      "price": 141.31,
+      "changePct": 6.056739717802456,
+      "marketCap": 9460971277,
+      "sector": "Technology Services",
+      "mA": 13,
+      "mB": 11,
+      "mC": -3
+    },
+    {
+      "symbol": "TMDX",
+      "price": 75.74,
+      "changePct": 6.331601853151748,
+      "marketCap": 2617643194,
+      "sector": "Health Technology",
+      "mA": 12,
+      "mB": 11,
+      "mC": -4
+    },
+    {
+      "symbol": "CHA",
+      "price": 11.68,
+      "changePct": 6.181818181818179,
+      "marketCap": 2228115706,
+      "sector": "Consumer Non-Durables",
+      "mA": 11,
+      "mB": 11,
+      "mC": -6
+    },
+    {
+      "symbol": "CNXC",
+      "price": 24.88,
+      "changePct": 12.072072072072071,
+      "marketCap": 1518136559,
+      "sector": "Technology Services",
+      "mA": 10,
+      "mB": 9,
+      "mC": -9
+    },
+    {
+      "symbol": "ODTX",
+      "price": 17.61,
+      "changePct": 5.512282804074284,
+      "marketCap": 845831551.0000001,
+      "sector": "Health Technology",
+      "mA": 10,
+      "mB": 9,
+      "mC": -8
+    },
+    {
+      "symbol": "AIIR",
+      "price": 7.12,
+      "changePct": 7.067669172932327,
+      "marketCap": 1141952659,
+      "sector": "Producer Manufacturing",
+      "mA": 7,
+      "mB": 6,
+      "mC": -8
+    },
+    {
+      "symbol": "NGL",
+      "price": 15.49,
+      "changePct": 6.460481099656354,
+      "marketCap": 1933373250.0000002,
+      "sector": "Industrial Services",
+      "mA": 6,
+      "mB": 6,
+      "mC": -10
+    },
+    {
+      "symbol": "SOC",
+      "price": 4.43,
+      "changePct": 13.010204081632647,
+      "marketCap": 827658836,
+      "sector": "Energy Minerals",
+      "mA": 5,
+      "mB": -2,
+      "mC": -17
+    },
+    {
+      "symbol": "GLOB",
+      "price": 32.12,
+      "changePct": 7.2096128170894405,
+      "marketCap": 1386927228.0000002,
+      "sector": "Technology Services",
+      "mA": 4,
+      "mB": 4,
+      "mC": -10
+    },
+    {
+      "symbol": "VRRM",
+      "price": 4.52,
+      "changePct": 9.708737864077657,
+      "marketCap": 686618109.0000001,
+      "sector": "Transportation",
+      "mA": 2,
+      "mB": 2,
+      "mC": -14
+    },
+    {
+      "symbol": "GENI",
+      "price": 6.61,
+      "changePct": 6.7851373182552495,
+      "marketCap": 1768427389,
+      "sector": "Technology Services",
+      "mA": 2,
+      "mB": 3,
+      "mC": -11
+    },
+    {
+      "symbol": "DUOL",
+      "price": 132.34,
+      "changePct": 6.075665277332477,
+      "marketCap": 6166133353.000001,
+      "sector": "Technology Services",
+      "mA": 1,
+      "mB": -9,
+      "mC": -23
+    },
+    {
+      "symbol": "ARX",
+      "price": 13.34,
+      "changePct": 5.537974683544298,
+      "marketCap": 2910805913,
+      "sector": "Finance",
+      "mA": 1,
+      "mB": 1,
+      "mC": -1
+    },
+    {
+      "symbol": "FUBO",
+      "price": 9.83,
+      "changePct": 7.080610021786496,
+      "marketCap": 1065928557,
+      "sector": "Technology Services",
+      "mA": -13,
+      "mB": -11,
+      "mC": -23
+    },
+    {
+      "symbol": "MH",
+      "price": 10.52,
+      "changePct": 7.1283095723014185,
+      "marketCap": 2012225384.0000002,
+      "sector": "Commercial Services",
+      "mA": -15,
+      "mB": -13,
+      "mC": -28
+    },
+    {
+      "symbol": "NNNN",
+      "price": 9.97,
+      "changePct": 6.176783812566561,
+      "marketCap": 1434595313,
+      "sector": "Health Technology",
+      "mA": -40,
+      "mB": -38,
+      "mC": -49
     }
   ]
 }
