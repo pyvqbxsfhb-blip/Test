@@ -84,6 +84,37 @@ function recommendation(rows) {
     <p class="sub" style="margin:8px 0 0">Mode D = A's increment quality + graduated exhaustion cap. Screening aid, not investment advice — confirm live prices and catalyst before acting.</p></div>`;
 }
 
+// End-of-report: each mode's top picks side by side.
+function recsByMode(names, n = 8) {
+  const modes = [
+    ['D · refined ★', 'mD'],
+    ['A · increment', 'mA'],
+    ['B · balanced', 'mB'],
+    ['C · sustainable', 'mC'],
+  ];
+  const cols = modes.map(([label, key]) => ({
+    label,
+    key,
+    top: [...names].filter((r) => r[key] != null).sort((a, b) => b[key] - a[key]).slice(0, n),
+  }));
+  const head = cols.map((c) => `<th>${esc(c.label)}</th>`).join('');
+  let rows = '';
+  for (let i = 0; i < n; i++) {
+    rows +=
+      `<tr><td class="rk">${i + 1}</td>` +
+      cols
+        .map((c) => {
+          const r = c.top[i];
+          return `<td>${r ? `<span class="mono">${esc(r.symbol)}</span> <span class="sc">${sg(r[c.key])}</span>` : ''}</td>`;
+        })
+        .join('') +
+      '</tr>';
+  }
+  return `<h2>★ Top recommendations by mode</h2>
+    <p class="sub" style="margin:0 0 6px">Each column is that mode's top ${n} picks. D is the recommended mode; A/B/C shown for comparison.</p>
+    <div style="overflow-x:auto"><table class="recs"><thead><tr><th>#</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
 export function buildReport(dir = path.resolve('snapshots')) {
   const days = fs
     .readdirSync(dir)
@@ -117,6 +148,8 @@ export function buildReport(dir = path.resolve('snapshots')) {
   .viz-root th,.viz-root td{padding:4px 8px;border-bottom:1px solid var(--grid);text-align:left}
   .viz-root th{color:var(--muted);font-weight:600} .viz-root .num,.viz-root .mono{text-align:right;font-variant-numeric:tabular-nums}
   .viz-root .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;text-align:left;font-weight:600} .viz-root td.d{color:var(--pos);font-weight:700}
+  .viz-root table.recs td{text-align:left} .viz-root table.recs .rk{color:var(--muted)} .viz-root .sc{color:var(--pos);font-variant-numeric:tabular-nums;font-size:11px}
+  .viz-root table.recs th:nth-child(2){color:var(--pos)}
 </style>
 <h1>Daily momentum ranking — ${esc(latest.date)}</h1>
 <p class="sub">Ranked by Mode D (refined) · A/B/C/D in table · ${latest.count ?? ranked.length} names ($500M–$50B) · price-only · not investment advice</p>
@@ -126,6 +159,7 @@ ${barChart(ranked)}
 ${trendChart(days, latest)}
 <h2>Table — all four modes</h2>
 ${table(ranked)}
+${recsByMode(latest.names)}
 </div></body></html>`;
 
   const out = path.join(dir, 'report.html');
