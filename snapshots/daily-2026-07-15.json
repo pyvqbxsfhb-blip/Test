@@ -1,13 +1,13 @@
 {
   "date": "2026-07-15",
-  "capturedAt": "2026-07-15T10:15:24.466Z",
+  "capturedAt": "2026-07-15T10:38:40.412Z",
   "band": "500M-50B",
   "modes": {
     "A": "increment",
     "B": "balanced",
     "C": "sustainable"
   },
-  "count": 54,
+  "count": 55,
   "names": [
     {
       "symbol": "FTK",
@@ -17,17 +17,8 @@
       "sector": "Industrial Services",
       "mA": 74,
       "mB": 67,
-      "mC": 65
-    },
-    {
-      "symbol": "COAG",
-      "price": 43.31,
-      "changePct": 9.617818273854732,
-      "marketCap": 2022811371,
-      "sector": "Health Technology",
-      "mA": 72,
-      "mB": 53,
-      "mC": 46
+      "mC": 65,
+      "mD": 82
     },
     {
       "symbol": "TXG",
@@ -37,17 +28,19 @@
       "sector": "Health Technology",
       "mA": 69,
       "mB": 52,
-      "mC": 45
+      "mC": 45,
+      "mD": 75
     },
     {
-      "symbol": "NTSK",
-      "price": 14.27,
-      "changePct": 11.484374999999991,
-      "marketCap": 5763990707.000001,
-      "sector": "Technology Services",
-      "mA": 52,
-      "mB": 29,
-      "mC": 33
+      "symbol": "COAG",
+      "price": 43.31,
+      "changePct": 9.617818273854732,
+      "marketCap": 2022811371,
+      "sector": "Health Technology",
+      "mA": 72,
+      "mB": 53,
+      "mC": 46,
+      "mD": 71
     },
     {
       "symbol": "AVTR",
@@ -57,7 +50,8 @@
       "sector": "Health Technology",
       "mA": 52,
       "mB": 47,
-      "mC": 47
+      "mC": 47,
+      "mD": 58
     },
     {
       "symbol": "CHRN",
@@ -67,27 +61,19 @@
       "sector": "Technology Services",
       "mA": 48,
       "mB": 41,
-      "mC": 21
+      "mC": 21,
+      "mD": 52
     },
     {
-      "symbol": "RPD",
-      "price": 12.97,
-      "changePct": 8.80872483221477,
-      "marketCap": 866793157,
+      "symbol": "NTSK",
+      "price": 14.27,
+      "changePct": 11.484374999999991,
+      "marketCap": 5763990707.000001,
       "sector": "Technology Services",
-      "mA": 47,
-      "mB": -7,
-      "mC": 47
-    },
-    {
-      "symbol": "TSEM",
-      "price": 255.49,
-      "changePct": 11.237373737373737,
-      "marketCap": 28552700048.999996,
-      "sector": "Electronic Technology",
-      "mA": 45,
-      "mB": 35,
-      "mC": 33
+      "mA": 52,
+      "mB": 29,
+      "mC": 33,
+      "mD": 50
     },
     {
       "symbol": "S",
@@ -97,7 +83,19 @@
       "sector": "Technology Services",
       "mA": 45,
       "mB": 36,
-      "mC": 43
+      "mC": 43,
+      "mD": 50
+    },
+    {
+      "symbol": "TSEM",
+      "price": 255.49,
+      "changePct": 11.237373737373737,
+      "marketCap": 28552700048.999996,
+      "sector": "Electronic Technology",
+      "mA": 45,
+      "mB": 35,
+      "mC": 33,
+      "mD": 48
     },
     {
       "symbol": "CTRN",
@@ -107,7 +105,8 @@
       "sector": "Retail Trade",
       "mA": 36,
       "mB": 34,
-      "mC": 17
+      "mC": 17,
+      "mD": 39
     },
     {
       "symbol": "OKTA",
@@ -117,7 +116,8 @@
       "sector": "Technology Services",
       "mA": 31,
       "mB": 25,
-      "mC": 31
+      "mC": 31,
+      "mD": 33
     },
     {
       "symbol": "MEI",
@@ -127,7 +127,19 @@
       "sector": "Electronic Technology",
       "mA": 30,
       "mB": 28,
-      "mC": 10
+      "mC": 10,
+      "mD": 32
+    },
+    {
+      "symbol": "RPD",
+      "price": 12.97,
+      "changePct": 8.80872483221477,
+      "marketCap": 866793157,
+      "sector": "Technology Services",
+      "mA": 47,
+      "mB": -7,
+      "mC": 47,
+      "mD": 30
     },
     {
       "symbol": "RH",
@@ -137,37 +149,8 @@
       "sector": "Retail Trade",
       "mA": 28,
       "mB": 27,
-      "mC": 10
-    },
-    {
-      "symbol": "TENB",
-      "price": 42.65,
-      "changePct": 8.801020408163254,
-      "marketCap": 4703100127,
-      "sector": "Technology Services",
-      "mA": 27,
-      "mB": 9,
-      "mC": 28
-    },
-    {
-      "symbol": "DAVE",
-      "price": 417,
-      "changePct": 7.0438443372009445,
-      "marketCap": 5301840834,
-      "sector": "Finance",
-      "mA": 27,
-      "mB": 11,
-      "mC": 0
-    },
-    {
-      "symbol": "PHOE",
-      "price": 25.95,
-      "changePct": 25.36231884057971,
-      "marketCap": 560520026,
-      "sector": "Industrial Services",
-      "mA": 24,
-      "mB": 10,
-      "mC": 29
+      "mC": 10,
+      "mD": 29
     },
     {
       "symbol": "NB",
@@ -177,7 +160,19 @@
       "sector": "Non-Energy Minerals",
       "mA": 24,
       "mB": 20,
-      "mC": 20
+      "mC": 20,
+      "mD": 27
+    },
+    {
+      "symbol": "CAMT",
+      "price": 149.9,
+      "changePct": 9.592045620704786,
+      "marketCap": 6993812190,
+      "sector": "Electronic Technology",
+      "mA": 24,
+      "mB": 20,
+      "mC": 3,
+      "mD": 27
     },
     {
       "symbol": "BMNR",
@@ -187,7 +182,8 @@
       "sector": "Finance",
       "mA": 23,
       "mB": 21,
-      "mC": 6
+      "mC": 6,
+      "mD": 26
     },
     {
       "symbol": "SBET",
@@ -197,27 +193,41 @@
       "sector": "Commercial Services",
       "mA": 22,
       "mB": 20,
-      "mC": 5
+      "mC": 5,
+      "mD": 24
     },
     {
-      "symbol": "QLYS",
-      "price": 164.12,
-      "changePct": 8.3014385640755,
-      "marketCap": 5779814965,
+      "symbol": "DAVE",
+      "price": 417,
+      "changePct": 7.0438443372009445,
+      "marketCap": 5301840834,
+      "sector": "Finance",
+      "mA": 27,
+      "mB": 11,
+      "mC": 0,
+      "mD": 20
+    },
+    {
+      "symbol": "TENB",
+      "price": 42.65,
+      "changePct": 8.801020408163254,
+      "marketCap": 4703100127,
       "sector": "Technology Services",
-      "mA": 22,
-      "mB": 4,
-      "mC": 10
+      "mA": 27,
+      "mB": 9,
+      "mC": 28,
+      "mD": 19
     },
     {
-      "symbol": "ATAI",
-      "price": 5.67,
-      "changePct": 14.084507042253524,
-      "marketCap": 2087505142.9999998,
-      "sector": "Health Technology",
-      "mA": 18,
-      "mB": 2,
-      "mC": -11
+      "symbol": "PHOE",
+      "price": 25.95,
+      "changePct": 25.36231884057971,
+      "marketCap": 560520026,
+      "sector": "Industrial Services",
+      "mA": 24,
+      "mB": 10,
+      "mC": 29,
+      "mD": 18
     },
     {
       "symbol": "SEZL",
@@ -227,17 +237,8 @@
       "sector": "Technology Services",
       "mA": 18,
       "mB": 17,
-      "mC": 5
-    },
-    {
-      "symbol": "ERAS",
-      "price": 19.5,
-      "changePct": 8.938547486033528,
-      "marketCap": 6064198287.999999,
-      "sector": "Health Technology",
-      "mA": 17,
-      "mB": 1,
-      "mC": -9
+      "mC": 5,
+      "mD": 18
     },
     {
       "symbol": "SMTC",
@@ -247,7 +248,8 @@
       "sector": "Electronic Technology",
       "mA": 17,
       "mB": 14,
-      "mC": -5
+      "mC": -5,
+      "mD": 18
     },
     {
       "symbol": "OPRA",
@@ -257,7 +259,19 @@
       "sector": "Technology Services",
       "mA": 16,
       "mB": 15,
-      "mC": 13
+      "mC": 13,
+      "mD": 16
+    },
+    {
+      "symbol": "QLYS",
+      "price": 164.12,
+      "changePct": 8.3014385640755,
+      "marketCap": 5779814965,
+      "sector": "Technology Services",
+      "mA": 22,
+      "mB": 4,
+      "mC": 10,
+      "mD": 13
     },
     {
       "symbol": "SHLS",
@@ -267,17 +281,8 @@
       "sector": "Electronic Technology",
       "mA": 11,
       "mB": 11,
-      "mC": -5
-    },
-    {
-      "symbol": "ZS",
-      "price": 152.09,
-      "changePct": 7.241573825976598,
-      "marketCap": 24594402386.999996,
-      "sector": "Technology Services",
-      "mA": 11,
-      "mB": 10,
-      "mC": -1
+      "mC": -5,
+      "mD": 12
     },
     {
       "symbol": "HKD",
@@ -287,7 +292,19 @@
       "sector": "Technology Services",
       "mA": 11,
       "mB": 10,
-      "mC": -7
+      "mC": -7,
+      "mD": 12
+    },
+    {
+      "symbol": "ZS",
+      "price": 152.09,
+      "changePct": 7.241573825976598,
+      "marketCap": 24594402386.999996,
+      "sector": "Technology Services",
+      "mA": 11,
+      "mB": 10,
+      "mC": -1,
+      "mD": 11
     },
     {
       "symbol": "AAOI",
@@ -297,7 +314,8 @@
       "sector": "Electronic Technology",
       "mA": 10,
       "mB": 7,
-      "mC": -12
+      "mC": -12,
+      "mD": 10
     },
     {
       "symbol": "CLSK",
@@ -307,17 +325,30 @@
       "sector": "Technology Services",
       "mA": 10,
       "mB": 5,
-      "mC": 3
+      "mC": 3,
+      "mD": 10
     },
     {
-      "symbol": "DMRA",
-      "price": 30.99,
-      "changePct": 10.678571428571423,
-      "marketCap": 1907533529,
+      "symbol": "ATAI",
+      "price": 5.67,
+      "changePct": 14.084507042253524,
+      "marketCap": 2087505142.9999998,
       "sector": "Health Technology",
-      "mA": 8,
-      "mB": 6,
-      "mC": -4
+      "mA": 18,
+      "mB": 2,
+      "mC": -11,
+      "mD": 9
+    },
+    {
+      "symbol": "ERAS",
+      "price": 19.5,
+      "changePct": 8.938547486033528,
+      "marketCap": 6064198287.999999,
+      "sector": "Health Technology",
+      "mA": 17,
+      "mB": 1,
+      "mC": -9,
+      "mD": 9
     },
     {
       "symbol": "POET",
@@ -327,7 +358,19 @@
       "sector": "Producer Manufacturing",
       "mA": 8,
       "mB": 7,
-      "mC": -12
+      "mC": -12,
+      "mD": 8
+    },
+    {
+      "symbol": "DMRA",
+      "price": 30.99,
+      "changePct": 10.678571428571423,
+      "marketCap": 1907533529,
+      "sector": "Health Technology",
+      "mA": 8,
+      "mB": 6,
+      "mC": -4,
+      "mD": 7
     },
     {
       "symbol": "GRPN",
@@ -337,7 +380,8 @@
       "sector": "Retail Trade",
       "mA": -2,
       "mB": 0,
-      "mC": -10
+      "mC": -10,
+      "mD": -3
     },
     {
       "symbol": "AXTI",
@@ -347,7 +391,8 @@
       "sector": "Electronic Technology",
       "mA": -3,
       "mB": -4,
-      "mC": -18
+      "mC": -18,
+      "mD": -4
     },
     {
       "symbol": "CELC",
@@ -357,27 +402,8 @@
       "sector": "Health Technology",
       "mA": -5,
       "mB": -3,
-      "mC": 0
-    },
-    {
-      "symbol": "CCXI",
-      "price": 15.97,
-      "changePct": 11.36680613668062,
-      "marketCap": 889529039,
-      "sector": "Finance",
-      "mA": -8,
-      "mB": -17,
-      "mC": -33
-    },
-    {
-      "symbol": "HYMC",
-      "price": 21.86,
-      "changePct": 6.999510523739598,
-      "marketCap": 1997142845,
-      "sector": "Non-Energy Minerals",
-      "mA": -9,
-      "mB": -8,
-      "mC": -26
+      "mC": 0,
+      "mD": -6
     },
     {
       "symbol": "RGC",
@@ -387,7 +413,19 @@
       "sector": "Health Technology",
       "mA": -11,
       "mB": -11,
-      "mC": -9
+      "mC": -9,
+      "mD": -11
+    },
+    {
+      "symbol": "HYMC",
+      "price": 21.86,
+      "changePct": 6.999510523739598,
+      "marketCap": 1997142845,
+      "sector": "Non-Energy Minerals",
+      "mA": -9,
+      "mB": -8,
+      "mC": -26,
+      "mD": -11
     },
     {
       "symbol": "KTOS",
@@ -397,17 +435,8 @@
       "sector": "Electronic Technology",
       "mA": -11,
       "mB": -9,
-      "mC": -24
-    },
-    {
-      "symbol": "GLUE",
-      "price": 23.46,
-      "changePct": 6.733393994540493,
-      "marketCap": 1981887199,
-      "sector": "Health Technology",
-      "mA": -12,
-      "mB": -20,
-      "mC": -33
+      "mC": -24,
+      "mD": -12
     },
     {
       "symbol": "ACHR",
@@ -417,7 +446,8 @@
       "sector": "Electronic Technology",
       "mA": -12,
       "mB": -11,
-      "mC": -25
+      "mC": -25,
+      "mD": -14
     },
     {
       "symbol": "FRMI",
@@ -427,7 +457,19 @@
       "sector": "Finance",
       "mA": -16,
       "mB": -15,
-      "mC": -15
+      "mC": -15,
+      "mD": -18
+    },
+    {
+      "symbol": "CCXI",
+      "price": 15.97,
+      "changePct": 11.36680613668062,
+      "marketCap": 889529039,
+      "sector": "Finance",
+      "mA": -8,
+      "mB": -17,
+      "mC": -33,
+      "mD": -19
     },
     {
       "symbol": "SAIL",
@@ -437,7 +479,8 @@
       "sector": "Technology Services",
       "mA": -18,
       "mB": -16,
-      "mC": -12
+      "mC": -12,
+      "mD": -19
     },
     {
       "symbol": "FEIM",
@@ -447,17 +490,8 @@
       "sector": "Electronic Technology",
       "mA": -19,
       "mB": -17,
-      "mC": -17
-    },
-    {
-      "symbol": "BLSH",
-      "price": 24.85,
-      "changePct": 8.65763008307827,
-      "marketCap": 3735009735,
-      "sector": "Technology Services",
-      "mA": -22,
-      "mB": -19,
-      "mC": -34
+      "mC": -17,
+      "mD": -21
     },
     {
       "symbol": "PLBL",
@@ -467,27 +501,30 @@
       "sector": "Retail Trade",
       "mA": -23,
       "mB": -21,
-      "mC": -8
+      "mC": -8,
+      "mD": -23
     },
     {
-      "symbol": "CDNL",
-      "price": 69.72,
-      "changePct": 7.4930619796484725,
-      "marketCap": 3309605588,
-      "sector": "Industrial Services",
-      "mA": -23,
-      "mB": -21,
-      "mC": -37
-    },
-    {
-      "symbol": "LQDA",
-      "price": 76.49,
-      "changePct": 7.414688948181437,
-      "marketCap": 6802110224.000001,
+      "symbol": "GLUE",
+      "price": 23.46,
+      "changePct": 6.733393994540493,
+      "marketCap": 1981887199,
       "sector": "Health Technology",
-      "mA": -23,
-      "mB": -29,
-      "mC": -43
+      "mA": -12,
+      "mB": -20,
+      "mC": -33,
+      "mD": -23
+    },
+    {
+      "symbol": "BLSH",
+      "price": 24.85,
+      "changePct": 8.65763008307827,
+      "marketCap": 3735009735,
+      "sector": "Technology Services",
+      "mA": -22,
+      "mB": -19,
+      "mC": -34,
+      "mD": -25
     },
     {
       "symbol": "UMAC",
@@ -497,7 +534,19 @@
       "sector": "Electronic Technology",
       "mA": -24,
       "mB": -21,
-      "mC": -34
+      "mC": -34,
+      "mD": -26
+    },
+    {
+      "symbol": "CDNL",
+      "price": 69.72,
+      "changePct": 7.4930619796484725,
+      "marketCap": 3309605588,
+      "sector": "Industrial Services",
+      "mA": -23,
+      "mB": -21,
+      "mC": -37,
+      "mD": -26
     },
     {
       "symbol": "UAMY",
@@ -507,7 +556,8 @@
       "sector": "Non-Energy Minerals",
       "mA": -24,
       "mB": -21,
-      "mC": -36
+      "mC": -36,
+      "mD": -27
     },
     {
       "symbol": "YSS",
@@ -517,17 +567,8 @@
       "sector": "Electronic Technology",
       "mA": -26,
       "mB": -24,
-      "mC": -38
-    },
-    {
-      "symbol": "TRVI",
-      "price": 17.91,
-      "changePct": 8.414043583535111,
-      "marketCap": 2542856509.0000005,
-      "sector": "Health Technology",
-      "mA": -29,
-      "mB": -35,
-      "mC": -48
+      "mC": -38,
+      "mD": -29
     },
     {
       "symbol": "AUGO",
@@ -537,7 +578,8 @@
       "sector": "Non-Energy Minerals",
       "mA": -29,
       "mB": -25,
-      "mC": -38
+      "mC": -38,
+      "mD": -32
     },
     {
       "symbol": "FCEL",
@@ -547,7 +589,30 @@
       "sector": "Electronic Technology",
       "mA": -31,
       "mB": -30,
-      "mC": -26
+      "mC": -26,
+      "mD": -33
+    },
+    {
+      "symbol": "LQDA",
+      "price": 76.49,
+      "changePct": 7.414688948181437,
+      "marketCap": 6802110224.000001,
+      "sector": "Health Technology",
+      "mA": -23,
+      "mB": -29,
+      "mC": -43,
+      "mD": -36
+    },
+    {
+      "symbol": "TRVI",
+      "price": 17.91,
+      "changePct": 8.414043583535111,
+      "marketCap": 2542856509.0000005,
+      "sector": "Health Technology",
+      "mA": -29,
+      "mB": -35,
+      "mC": -48,
+      "mD": -43
     }
   ]
 }

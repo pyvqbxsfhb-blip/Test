@@ -13,6 +13,7 @@ import fs from 'fs';
 import path from 'path';
 import { launchBrowser, openSite, scanGainers, getDailyBars } from './tradingview.js';
 import { momentumScore } from './momentum.js';
+import { buildReport } from './report.js';
 import { DEFAULTS } from './config.js';
 
 const MODES = ['increment', 'balanced', 'sustainable']; // A, B, C
@@ -46,7 +47,7 @@ async function main() {
       (r) => r.marketCap >= DEFAULTS.marketCapMin && r.marketCap <= DEFAULTS.marketCapMax
     );
     const pool = sized.slice(0, o.enrich); // highest-change in-band names to score
-    process.stderr.write(`▶ scoring top ${pool.length} in all 3 modes (A/B/C) …\n`);
+    process.stderr.write(`▶ scoring top ${pool.length} in all 4 modes (A/B/C/D) …\n`);
     const scored = [];
     for (const r of pool) {
       const candles = await getDailyBars(page, r.fullSymbol, 60);
@@ -60,9 +61,10 @@ async function main() {
         mA: momentumScore(candles, 'increment').score,
         mB: momentumScore(candles, 'balanced').score,
         mC: momentumScore(candles, 'sustainable').score,
+        mD: momentumScore(candles, 'refined').score,
       });
     }
-    scored.sort((a, b) => b.mA - a.mA); // stored order by A (any mode re-sortable later)
+    scored.sort((a, b) => b.mD - a.mD); // stored order by D (recommendation mode)
     ranked = scored;
   } finally {
     await b.close();
@@ -85,18 +87,22 @@ async function main() {
     ? fs.readFileSync(histPath, 'utf8').split('\n').filter((l) => l && !l.includes(`"date":"${date}"`))
     : [];
   for (const r of ranked)
-    lines.push(JSON.stringify({ date, symbol: r.symbol, price: r.price, mA: r.mA, mB: r.mB, mC: r.mC }));
+    lines.push(JSON.stringify({ date, symbol: r.symbol, price: r.price, mA: r.mA, mB: r.mB, mC: r.mC, mD: r.mD }));
   fs.writeFileSync(histPath, lines.join('\n') + '\n');
+
+  // Always (re)generate the report with the recommendation.
+  const rep = buildReport(dir);
 
   // Minimal output: top-N by each mode (no commentary).
   const pad = (s, n) => String(s).padEnd(n).slice(0, n);
   const topBy = (key) => [...ranked].sort((a, b) => b[key] - a[key]).slice(0, o.top);
   console.log(`# ${date}  (${ranked.length} names, $500M-$50B)  -> ${dailyPath}`);
-  console.log(pad('RANK', 5) + pad('A:incr', 16) + pad('B:balanced', 16) + 'C:sustainable');
-  const A = topBy('mA'), B = topBy('mB'), C = topBy('mC');
+  console.log(`# report -> ${rep.out}`);
+  console.log(pad('RANK', 5) + pad('D:refined', 15) + pad('A:incr', 15) + pad('B:balanced', 15) + 'C:sustainable');
+  const D = topBy('mD'), A = topBy('mA'), B = topBy('mB'), C = topBy('mC');
   const fmt = (r, k) => (r ? `${r.symbol} ${r[k] >= 0 ? '+' : ''}${r[k]}` : '');
   for (let i = 0; i < o.top; i++)
-    console.log(pad(i + 1, 5) + pad(fmt(A[i], 'mA'), 16) + pad(fmt(B[i], 'mB'), 16) + fmt(C[i], 'mC'));
+    console.log(pad(i + 1, 5) + pad(fmt(D[i], 'mD'), 15) + pad(fmt(A[i], 'mA'), 15) + pad(fmt(B[i], 'mB'), 15) + fmt(C[i], 'mC'));
 }
 
 main().catch((e) => {

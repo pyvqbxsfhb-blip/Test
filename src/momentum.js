@@ -305,6 +305,11 @@ const MODE_WEIGHTS = {
   increment: { thrust: 0.8, medium: 0.3, accel: 0.5, vadj: 6, vol: 15, cons: 24, brake: 'off' },
   balanced: { thrust: 0.55, medium: 0.45, accel: 0.6, vadj: 4, vol: 12, cons: 20, brake: 'on' },
   sustainable: { thrust: 0.5, medium: 0.35, accel: 0.4, vadj: 5, vol: 20, cons: 28, brake: 'weakvol' },
+  // Mode D — distilled from A: KEEP A's raw increment weights, ENFORCE the
+  // quality dims that gave A its edge (heavier vadj/volume/consistency), and
+  // RESOLVE A's fade weakness with a graduated 'soft' brake that only bites at
+  // genuine exhaustion (extreme RSI, very stretched, or overbought+decelerating).
+  refined: { thrust: 0.8, medium: 0.3, accel: 0.5, vadj: 8, vol: 18, cons: 28, brake: 'soft' },
 };
 
 export function momentumScore(candles, mode = 'increment') {
@@ -343,6 +348,15 @@ export function momentumScore(candles, mode = 'increment') {
     }
   }
   if (W.brake === 'weakvol' && r.volRatio != null && r.volRatio < 0.9) ex += 12;
+  if (W.brake === 'soft') {
+    // Graduated: only genuine exhaustion, not every stretched name.
+    if (r.rsi14 != null) {
+      if (r.rsi14 >= 85) ex += 18;
+      else if (r.rsi14 >= 78) ex += 6;
+    }
+    if (r.extension20 != null && r.extension20 > 28) ex += 8;
+    if (r.rsi14 != null && r.rsi14 >= 74 && accel < 0) ex += 10; // overbought AND rolling over
+  }
   if (r.divergence) ex += mode === 'increment' ? 10 : 20; // increment weakening internally
   if (r.closeLoc != null && r.closeLoc <= 0.33) ex += mode === 'increment' ? 6 : 8;
   if ((r.consecUp || 0) === 0 && roc5 < 8) ex += mode === 'increment' ? 6 : 10; // stalling

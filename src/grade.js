@@ -60,6 +60,7 @@ async function main() {
         mA: n.mA,
         mB: n.mB,
         mC: n.mC,
+        mD: n.mD,
         curDate: new Date(cur.t * 1000).toISOString().slice(0, 10),
       });
     }
@@ -77,7 +78,7 @@ async function main() {
   const pad = (s, n) => String(s).padEnd(n).slice(0, n);
   console.log(pad('MODE', 14) + pad('Spearman', 11) + pad('top10 avg move', 16) + 'rest avg move');
   console.log('-'.repeat(60));
-  const modes = [['A: increment', 'mA'], ['B: balanced', 'mB'], ['C: sustainable', 'mC']];
+  const modes = [['A: increment', 'mA'], ['B: balanced', 'mB'], ['C: sustainable', 'mC'], ['D: refined', 'mD']];
   const results = [];
   for (const [label, key] of modes) {
     const valid = rows.filter((r) => r[key] != null);
