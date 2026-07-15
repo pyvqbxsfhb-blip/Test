@@ -6,6 +6,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { loadPositions, computeScoreboard, TARGET_PCT, MAX_DAYS } from './scorecard.js';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const sg = (v) => (v == null ? '—' : (v >= 0 ? '+' : '') + v);
@@ -115,6 +116,32 @@ function recsByMode(names, n = 8) {
     <div style="overflow-x:auto"><table class="recs"><thead><tr><th>#</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
+// Mode scorecard — does each mode's #1 pick actually work?
+function scorecard(dir) {
+  const positions = loadPositions(dir);
+  if (!positions.length) return '';
+  const sb = computeScoreboard(positions);
+  const best = ['A', 'B', 'C', 'D'].reduce((a, m) => (sb[m].points > sb[a].points ? m : a), 'D');
+  const rows = ['D', 'A', 'B', 'C']
+    .map((m) => {
+      const s = sb[m];
+      const pc = s.points > 0 ? 'var(--pos)' : s.points < 0 ? 'var(--neg)' : 'var(--muted)';
+      return `<tr><td class="mono">${m}${m === best && s.points !== 0 ? ' ★' : ''}</td><td class="num" style="color:${pc};font-weight:700">${s.points >= 0 ? '+' : ''}${s.points}</td><td class="num">${s.won}</td><td class="num">${s.neutral}</td><td class="num">${s.lost}</td><td class="num">${s.open}</td><td class="num">${s.winRate == null ? '—' : (s.winRate * 100).toFixed(0) + '%'}</td></tr>`;
+    })
+    .join('');
+  // open positions with current peak toward target
+  const open = positions
+    .filter((p) => p.status === 'open')
+    .sort((a, b) => (b.peakPct || 0) - (a.peakPct || 0))
+    .slice(0, 12)
+    .map((p) => `<tr><td class="mono">${esc(p.mode)}</td><td class="mono">${esc(p.symbol)}</td><td>${esc(p.entryDate)}</td><td class="num">$${(p.entryPrice ?? 0).toFixed(2)}</td><td class="num" style="color:${(p.peakPct || 0) >= 0 ? 'var(--pos)' : 'var(--neg)'}">${(p.peakPct >= 0 ? '+' : '') + (p.peakPct ?? 0)}%</td><td class="num">${(p.lastPct >= 0 ? '+' : '') + (p.lastPct ?? 0)}%</td><td class="num">${p.barsHeld ?? 0}/${MAX_DAYS}</td></tr>`)
+    .join('');
+  return `<h2>Mode scorecard — does it work? (target +${TARGET_PCT}% within ${MAX_DAYS}d)</h2>
+    <table><thead><tr><th>Mode</th><th>Points</th><th>Won</th><th>Neut</th><th>Lost</th><th>Open</th><th>Win%</th></tr></thead><tbody>${rows}</tbody></table>
+    <p class="sub" style="margin:6px 0 0">+1 if a mode's #1 daily pick hits +${TARGET_PCT}% (intraday) before day ${MAX_DAYS}; 0 if it ends positive but short; −1 if negative at day ${MAX_DAYS}.</p>
+    ${open ? `<h2>Open positions</h2><table><thead><tr><th>Mode</th><th>Ticker</th><th>Entry</th><th>@</th><th>Peak</th><th>Now</th><th>Day</th></tr></thead><tbody>${open}</tbody></table>` : ''}`;
+}
+
 export function buildReport(dir = path.resolve('snapshots')) {
   const days = fs
     .readdirSync(dir)
@@ -154,6 +181,7 @@ export function buildReport(dir = path.resolve('snapshots')) {
 <h1>Daily momentum ranking — ${esc(latest.date)}</h1>
 <p class="sub">Ranked by Mode D (refined) · A/B/C/D in table · ${latest.count ?? ranked.length} names ($500M–$50B) · price-only · not investment advice</p>
 ${recommendation(ranked)}
+${scorecard(dir)}
 <h2>Top 20 by Mode D score</h2>
 ${barChart(ranked)}
 ${trendChart(days, latest)}
