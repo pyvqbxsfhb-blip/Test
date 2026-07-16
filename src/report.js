@@ -126,18 +126,20 @@ function scorecard(dir) {
     .map((m) => {
       const s = sb[m];
       const pc = s.points > 0 ? 'var(--pos)' : s.points < 0 ? 'var(--neg)' : 'var(--muted)';
-      return `<tr><td class="mono">${m}${m === best && s.points !== 0 ? ' ★' : ''}</td><td class="num" style="color:${pc};font-weight:700">${s.points >= 0 ? '+' : ''}${s.points}</td><td class="num">${s.won}</td><td class="num">${s.neutral}</td><td class="num">${s.lost}</td><td class="num">${s.open}</td><td class="num">${s.winRate == null ? '—' : (s.winRate * 100).toFixed(0) + '%'}</td></tr>`;
+      return `<tr><td class="mono">${m}${m === best && s.points !== 0 ? ' ★' : ''}</td><td class="num" style="color:${pc};font-weight:700">${s.points >= 0 ? '+' : ''}${s.points}</td><td class="num">${s.won}</td><td class="num">${s.neutral}</td><td class="num">${s.lost}</td><td class="num">${s.open}</td><td class="num">${s.winRate == null ? '—' : (s.winRate * 100).toFixed(0) + '%'}</td><td class="num">${s.avgDaysToWin == null ? '—' : s.avgDaysToWin + 'd'}</td></tr>`;
     })
     .join('');
   // open positions with current peak toward target
   const openList = positions
     .filter((p) => p.status === 'open')
     .sort((a, b) => (b.peakPct || 0) - (a.peakPct || 0));
+  // "heating": already >=6% peak within the first 5 days -> on pace to catch +11% early
+  const heat = (p) => (p.peakPct >= 6 && (p.barsHeld ?? 0) <= 5 ? ' 🔥' : '');
   const open = openList
-    .map((p) => `<tr><td class="mono">${esc(p.mode)}</td><td class="mono">${esc(p.symbol)}</td><td>${esc(p.entryDate)}</td><td class="num">$${(p.entryPrice ?? 0).toFixed(2)}</td><td class="num" style="color:${(p.peakPct || 0) >= 0 ? 'var(--pos)' : 'var(--neg)'}">${(p.peakPct >= 0 ? '+' : '') + (p.peakPct ?? 0)}%</td><td class="num">${(p.lastPct >= 0 ? '+' : '') + (p.lastPct ?? 0)}%</td><td class="num">${p.barsHeld ?? 0}/${MAX_DAYS}</td></tr>`)
+    .map((p) => `<tr><td class="mono">${esc(p.mode)}</td><td class="mono">${esc(p.symbol)}${heat(p)}</td><td>${esc(p.entryDate)}</td><td class="num">$${(p.entryPrice ?? 0).toFixed(2)}</td><td class="num" style="color:${(p.peakPct || 0) >= 0 ? 'var(--pos)' : 'var(--neg)'}">${(p.peakPct >= 0 ? '+' : '') + (p.peakPct ?? 0)}%</td><td class="num">${(p.lastPct >= 0 ? '+' : '') + (p.lastPct ?? 0)}%</td><td class="num">${p.barsHeld ?? 0}/${MAX_DAYS}</td></tr>`)
     .join('');
   return `<h2>Mode scorecard — does it work? (target +${TARGET_PCT}% within ${MAX_DAYS}d)</h2>
-    <table><thead><tr><th>Mode</th><th>Points</th><th>Won</th><th>Neut</th><th>Lost</th><th>Open</th><th>Win%</th></tr></thead><tbody>${rows}</tbody></table>
+    <table><thead><tr><th>Mode</th><th>Points</th><th>Won</th><th>Neut</th><th>Lost</th><th>Open</th><th>Win%</th><th>Avg d→win</th></tr></thead><tbody>${rows}</tbody></table>
     <p class="sub" style="margin:6px 0 0">+1 if a mode's #1 daily pick hits +${TARGET_PCT}% (intraday) before day ${MAX_DAYS}; 0 if it ends positive but short; −1 if negative at day ${MAX_DAYS}.</p>
     ${open ? `<h2>Open positions (${openList.length} tracked · up to 4/day × 20d)</h2><div style="max-height:420px;overflow:auto;border:1px solid var(--grid);border-radius:8px"><table><thead><tr><th>Mode</th><th>Ticker</th><th>Entry</th><th>@</th><th>Peak</th><th>Now</th><th>Day</th></tr></thead><tbody>${open}</tbody></table></div>` : ''}`;
 }

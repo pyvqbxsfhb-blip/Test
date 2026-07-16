@@ -47,10 +47,12 @@ export function computeScoreboard(positions) {
     const lost = ps.filter((p) => p.status === 'lost').length;
     const open = ps.filter((p) => p.status === 'open').length;
     const resolved = won + neutral + lost;
+    const wonDays = ps.filter((p) => p.status === 'won' && p.daysToTarget != null).map((p) => p.daysToTarget);
     sb[m] = {
       points: ps.reduce((s, p) => s + (p.points || 0), 0),
       won, neutral, lost, open, resolved,
       winRate: resolved ? +(won / resolved).toFixed(2) : null,
+      avgDaysToWin: wonDays.length ? +(wonDays.reduce((a, b) => a + b, 0) / wonDays.length).toFixed(1) : null,
     };
   }
   return sb;

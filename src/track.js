@@ -44,7 +44,12 @@ export async function resolvePositions(page, positions) {
     pos.lastPct = +((lastClose / pos.entryPrice - 1) * 100).toFixed(1);
     pos.barsHeld = since.length - 1; // trading days after entry
     if (pos.peakPct >= TARGET_PCT) {
-      pos.status = 'won'; pos.points = 1; pos.resolvedDate = isoDate(since[since.length - 1].t);
+      // exact day the +TARGET% was first crossed (0 = entry day) — "caught early?"
+      const tgt = pos.entryPrice * (1 + TARGET_PCT / 100);
+      const idx = since.findIndex((c) => (c.h ?? c.c) >= tgt);
+      pos.status = 'won'; pos.points = 1;
+      pos.daysToTarget = idx >= 0 ? idx : pos.barsHeld;
+      pos.resolvedDate = isoDate(since[idx >= 0 ? idx : since.length - 1].t);
     } else if (pos.barsHeld >= MAX_DAYS) {
       if (pos.lastPct > 0) { pos.status = 'neutral'; pos.points = 0; }
       else { pos.status = 'lost'; pos.points = -1; }
