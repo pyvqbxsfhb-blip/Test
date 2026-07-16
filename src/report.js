@@ -71,9 +71,9 @@ function trendChart(days, latest) {
 
 function table(rows) {
   const body = rows
-    .map((r, i) => `<tr><td>${i + 1}</td><td class="mono">${esc(r.symbol)}</td><td class="num d">${sg(r.mW)}</td><td class="num">${sg(r.mD)}</td><td class="num">${sg(r.mA)}</td><td class="num">${sg(r.mB)}</td><td class="num">${sg(r.mC)}</td><td class="num">$${(r.price ?? 0).toFixed(2)}</td><td class="num">${(r.changePct >= 0 ? '+' : '')}${(r.changePct ?? 0).toFixed(1)}%</td><td>${esc(r.sector || '')}</td></tr>`)
+    .map((r, i) => `<tr><td>${i + 1}</td><td class="mono">${esc(r.symbol)}</td><td class="num d">${sg(r.mW)}</td><td class="num">${sg(r.mZ)}</td><td class="num">${sg(r.mD)}</td><td class="num">${sg(r.mA)}</td><td class="num">${sg(r.mB)}</td><td class="num">${sg(r.mC)}</td><td class="num">$${(r.price ?? 0).toFixed(2)}</td><td class="num">${(r.changePct >= 0 ? '+' : '')}${(r.changePct ?? 0).toFixed(1)}%</td><td>${esc(r.sector || '')}</td></tr>`)
     .join('\n');
-  return `<table><thead><tr><th>#</th><th>Ticker</th><th>W★</th><th>D</th><th>A</th><th>B</th><th>C</th><th>Price</th><th>Chg</th><th>Sector</th></tr></thead><tbody>${body}</tbody></table>`;
+  return `<table><thead><tr><th>#</th><th>Ticker</th><th>W★</th><th>Z</th><th>D</th><th>A</th><th>B</th><th>C</th><th>Price</th><th>Chg</th><th>Sector</th></tr></thead><tbody>${body}</tbody></table>`;
 }
 
 function recommendation(rows) {
@@ -89,6 +89,7 @@ function recommendation(rows) {
 function recsByMode(names, n = 8) {
   const modes = [
     ['W · early ★', 'mW'],
+    ['Z · consensus', 'mZ'],
     ['D · refined', 'mD'],
     ['A · increment', 'mA'],
     ['B · balanced', 'mB'],
@@ -123,7 +124,7 @@ function scorecard(dir) {
   if (!positions.length) return '';
   const sb = computeScoreboard(positions);
   const best = MODE_LIST.reduce((a, m) => (sb[m].points > sb[a].points ? m : a), MODE_LIST[0]);
-  const rows = ['W', 'D', 'A', 'B', 'C']
+  const rows = ['W', 'Z', 'D', 'A', 'B', 'C']
     .map((m) => {
       const s = sb[m];
       const pc = s.points > 0 ? 'var(--pos)' : s.points < 0 ? 'var(--neg)' : 'var(--muted)';

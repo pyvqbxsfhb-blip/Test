@@ -370,6 +370,32 @@ export function momentumScore(candles, mode = 'increment') {
   return { score: Math.round(clamp(raw, -100, 100)), parts, mode, report: r };
 }
 
+// Mode Z (consensus / meta): for a day's pool of scored names, assign each an
+// mZ = average cross-sectional percentile across the base modes. A name ranked
+// highly by ALL modes scores ~100; high in one but low in others scores middling.
+// Rewards breadth of agreement. Mutates names (sets .mZ) and returns them.
+export const BASE_MODE_KEYS = ['mA', 'mB', 'mC', 'mD', 'mW'];
+export function assignConsensus(names) {
+  const keys = BASE_MODE_KEYS.filter((k) => names.some((n) => n[k] != null));
+  const pctByKey = {};
+  for (const k of keys) {
+    const vals = names.filter((n) => n[k] != null).map((n) => n[k]);
+    const m = vals.length;
+    pctByKey[k] = new Map();
+    for (const n of names) {
+      if (n[k] == null) continue;
+      let lt = 0, eq = 0;
+      for (const v of vals) { if (v < n[k]) lt++; else if (v === n[k]) eq++; }
+      pctByKey[k].set(n, m > 1 ? ((lt + (eq - 1) / 2) / (m - 1)) * 100 : 100);
+    }
+  }
+  for (const n of names) {
+    const ps = keys.map((k) => pctByKey[k].get(n)).filter((v) => v != null);
+    n.mZ = ps.length ? Math.round(ps.reduce((a, b) => a + b, 0) / ps.length) : null;
+  }
+  return names;
+}
+
 // Compare several named series side by side (what separates the risers from
 // the faders). names = { TICKER: candles[] }.
 export function compare(named) {

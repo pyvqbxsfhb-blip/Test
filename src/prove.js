@@ -9,7 +9,7 @@
 import fs from 'fs';
 import path from 'path';
 import { launchBrowser, openSite, getDailyBars } from './tradingview.js';
-import { momentumScore } from './momentum.js';
+import { momentumScore, assignConsensus } from './momentum.js';
 
 const dir = path.resolve('snapshots');
 const days = fs.readdirSync(dir).filter((f) => /^daily-\d{4}-\d{2}-\d{2}\.json$/.test(f)).sort()
@@ -30,7 +30,7 @@ async function candles(page, sym, cache) {
   cache.set(sym, out); return out;
 }
 
-const MODES = [['A', 'mA'], ['B', 'mB'], ['C', 'mC'], ['D', 'mD'], ['W', 'mW']];
+const MODES = [['A', 'mA'], ['B', 'mB'], ['C', 'mC'], ['D', 'mD'], ['W', 'mW'], ['Z', 'mZ']];
 
 async function main() {
   const b = await launchBrowser();
@@ -51,6 +51,7 @@ async function main() {
         const mW = asOf.length >= 20 ? momentumScore(asOf, 'early').score : null;
         rows.push({ date: day.date, symbol: n.symbol, mA: n.mA, mB: n.mB, mC: n.mC, mD: n.mD, mW, peakFwd, hit: peakFwd >= 11 });
       }
+      assignConsensus(rows.filter((r) => r.date === day.date)); // sets mZ per day
       process.stderr.write(`  ${day.date}: ${rows.filter((r) => r.date === day.date).length} names\n`);
     }
   } finally { await b.close(); }

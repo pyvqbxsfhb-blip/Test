@@ -12,7 +12,7 @@
 import fs from 'fs';
 import path from 'path';
 import { launchBrowser, openSite, scanGainers, getDailyBars } from './tradingview.js';
-import { momentumScore } from './momentum.js';
+import { momentumScore, assignConsensus } from './momentum.js';
 import { buildReport } from './report.js';
 import { loadPositions, seedFromSnapshots, resolvePositions, savePositions, computeScoreboard } from './track.js';
 import { MODE_LIST } from './scorecard.js';
@@ -68,13 +68,14 @@ async function main() {
         mW: momentumScore(candles, 'early').score,
       });
     }
+    assignConsensus(scored); // Mode Z (meta) from the base-mode scores
     scored.sort((a, b) => b.mW - a.mW); // stored order by W (proven / recommendation mode)
     ranked = scored;
 
     // ---- persist today's record + time series ----
     const record = {
       date, capturedAt, band: '500M-50B',
-      modes: { A: 'increment', B: 'balanced', C: 'sustainable', D: 'refined', W: 'early' },
+      modes: { A: 'increment', B: 'balanced', C: 'sustainable', D: 'refined', W: 'early', Z: 'consensus' },
       count: ranked.length, names: ranked,
     };
     fs.writeFileSync(path.join(dir, `daily-${date}.json`), JSON.stringify(record, null, 2));
@@ -83,7 +84,7 @@ async function main() {
       ? fs.readFileSync(histPath, 'utf8').split('\n').filter((l) => l && !l.includes(`"date":"${date}"`))
       : [];
     for (const r of ranked)
-      lines.push(JSON.stringify({ date, symbol: r.symbol, price: r.price, mA: r.mA, mB: r.mB, mC: r.mC, mD: r.mD, mW: r.mW }));
+      lines.push(JSON.stringify({ date, symbol: r.symbol, price: r.price, mA: r.mA, mB: r.mB, mC: r.mC, mD: r.mD, mW: r.mW, mZ: r.mZ }));
     fs.writeFileSync(histPath, lines.join('\n') + '\n');
 
     // ---- mode scorecard: open each mode's #1 pick, resolve open positions ----
