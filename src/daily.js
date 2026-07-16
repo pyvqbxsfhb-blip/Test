@@ -15,6 +15,7 @@ import { launchBrowser, openSite, scanGainers, getDailyBars } from './tradingvie
 import { momentumScore } from './momentum.js';
 import { buildReport } from './report.js';
 import { loadPositions, seedFromSnapshots, resolvePositions, savePositions, computeScoreboard } from './track.js';
+import { MODE_LIST } from './scorecard.js';
 import { DEFAULTS } from './config.js';
 
 const MODES = ['increment', 'balanced', 'sustainable']; // A, B, C
@@ -64,15 +65,16 @@ async function main() {
         mB: momentumScore(candles, 'balanced').score,
         mC: momentumScore(candles, 'sustainable').score,
         mD: momentumScore(candles, 'refined').score,
+        mW: momentumScore(candles, 'early').score,
       });
     }
-    scored.sort((a, b) => b.mD - a.mD); // stored order by D (recommendation mode)
+    scored.sort((a, b) => b.mW - a.mW); // stored order by W (proven / recommendation mode)
     ranked = scored;
 
     // ---- persist today's record + time series ----
     const record = {
       date, capturedAt, band: '500M-50B',
-      modes: { A: 'increment', B: 'balanced', C: 'sustainable', D: 'refined' },
+      modes: { A: 'increment', B: 'balanced', C: 'sustainable', D: 'refined', W: 'early' },
       count: ranked.length, names: ranked,
     };
     fs.writeFileSync(path.join(dir, `daily-${date}.json`), JSON.stringify(record, null, 2));
@@ -81,7 +83,7 @@ async function main() {
       ? fs.readFileSync(histPath, 'utf8').split('\n').filter((l) => l && !l.includes(`"date":"${date}"`))
       : [];
     for (const r of ranked)
-      lines.push(JSON.stringify({ date, symbol: r.symbol, price: r.price, mA: r.mA, mB: r.mB, mC: r.mC, mD: r.mD }));
+      lines.push(JSON.stringify({ date, symbol: r.symbol, price: r.price, mA: r.mA, mB: r.mB, mC: r.mC, mD: r.mD, mW: r.mW }));
     fs.writeFileSync(histPath, lines.join('\n') + '\n');
 
     // ---- mode scorecard: open each mode's #1 pick, resolve open positions ----
@@ -103,15 +105,15 @@ async function main() {
   const topBy = (key) => [...ranked].sort((a, b) => b[key] - a[key]).slice(0, o.top);
   console.log(`# ${date}  (${ranked.length} names, $500M-$50B)  -> ${dailyPath}`);
   console.log(`# report -> ${rep.out}`);
-  console.log(pad('RANK', 5) + pad('D:refined', 15) + pad('A:incr', 15) + pad('B:balanced', 15) + 'C:sustainable');
-  const D = topBy('mD'), A = topBy('mA'), B = topBy('mB'), C = topBy('mC');
+  console.log(pad('RANK', 5) + pad('W:early★', 14) + pad('D:refined', 14) + pad('A:incr', 14) + pad('B:bal', 14) + 'C:sust');
+  const W = topBy('mW'), D = topBy('mD'), A = topBy('mA'), B = topBy('mB'), C = topBy('mC');
   const fmt = (r, k) => (r ? `${r.symbol} ${r[k] >= 0 ? '+' : ''}${r[k]}` : '');
   for (let i = 0; i < o.top; i++)
-    console.log(pad(i + 1, 5) + pad(fmt(D[i], 'mD'), 15) + pad(fmt(A[i], 'mA'), 15) + pad(fmt(B[i], 'mB'), 15) + fmt(C[i], 'mC'));
+    console.log(pad(i + 1, 5) + pad(fmt(W[i], 'mW'), 14) + pad(fmt(D[i], 'mD'), 14) + pad(fmt(A[i], 'mA'), 14) + pad(fmt(B[i], 'mB'), 14) + fmt(C[i], 'mC'));
 
   console.log('\n# mode scorecard (target +11% / 20d)');
   console.log(pad('MODE', 6) + pad('PTS', 6) + pad('W', 4) + pad('N', 4) + pad('L', 4) + 'OPEN');
-  for (const m of ['A', 'B', 'C', 'D']) {
+  for (const m of MODE_LIST) {
     const s = scoreboard[m] || { points: 0, won: 0, neutral: 0, lost: 0, open: 0 };
     console.log(pad(m, 6) + pad((s.points >= 0 ? '+' : '') + s.points, 6) + pad(s.won, 4) + pad(s.neutral, 4) + pad(s.lost, 4) + s.open);
   }

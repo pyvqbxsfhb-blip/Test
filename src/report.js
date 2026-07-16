@@ -6,7 +6,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { loadPositions, computeScoreboard, TARGET_PCT, MAX_DAYS } from './scorecard.js';
+import { loadPositions, computeScoreboard, TARGET_PCT, MAX_DAYS, MODE_LIST } from './scorecard.js';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const sg = (v) => (v == null ? '—' : (v >= 0 ? '+' : '') + v);
@@ -15,7 +15,7 @@ const sg = (v) => (v == null ? '—' : (v >= 0 ? '+' : '') + v);
 function normalize(rec) {
   const names = (rec.names || rec.ranking || []).map((r) => ({
     ...r,
-    score: r.mD != null ? r.mD : r.mA != null ? r.mA : r.score,
+    score: r.mW != null ? r.mW : r.mD != null ? r.mD : r.mA != null ? r.mA : r.score,
   }));
   return { ...rec, names };
 }
@@ -65,30 +65,31 @@ function trendChart(days, latest) {
     })
     .join('\n');
   const xlabels = dates.map((d, i) => `<text x="${x(i)}" y="${H - 8}" class="lbl" text-anchor="middle">${esc(d.slice(5))}</text>`).join('');
-  return `<h2>Score trend — Mode D top names (${days.length} days)</h2>
+  return `<h2>Score trend — Mode W top names (${days.length} days)</h2>
     <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Score trend over days">${lines}${xlabels}</svg>`;
 }
 
 function table(rows) {
   const body = rows
-    .map((r, i) => `<tr><td>${i + 1}</td><td class="mono">${esc(r.symbol)}</td><td class="num d">${sg(r.mD)}</td><td class="num">${sg(r.mA)}</td><td class="num">${sg(r.mB)}</td><td class="num">${sg(r.mC)}</td><td class="num">$${(r.price ?? 0).toFixed(2)}</td><td class="num">${(r.changePct >= 0 ? '+' : '')}${(r.changePct ?? 0).toFixed(1)}%</td><td>${esc(r.sector || '')}</td></tr>`)
+    .map((r, i) => `<tr><td>${i + 1}</td><td class="mono">${esc(r.symbol)}</td><td class="num d">${sg(r.mW)}</td><td class="num">${sg(r.mD)}</td><td class="num">${sg(r.mA)}</td><td class="num">${sg(r.mB)}</td><td class="num">${sg(r.mC)}</td><td class="num">$${(r.price ?? 0).toFixed(2)}</td><td class="num">${(r.changePct >= 0 ? '+' : '')}${(r.changePct ?? 0).toFixed(1)}%</td><td>${esc(r.sector || '')}</td></tr>`)
     .join('\n');
-  return `<table><thead><tr><th>#</th><th>Ticker</th><th>D</th><th>A</th><th>B</th><th>C</th><th>Price</th><th>Chg</th><th>Sector</th></tr></thead><tbody>${body}</tbody></table>`;
+  return `<table><thead><tr><th>#</th><th>Ticker</th><th>W★</th><th>D</th><th>A</th><th>B</th><th>C</th><th>Price</th><th>Chg</th><th>Sector</th></tr></thead><tbody>${body}</tbody></table>`;
 }
 
 function recommendation(rows) {
   const picks = rows.slice(0, 5);
   const cards = picks
-    .map((r) => `<div class="rec"><span class="rt">${esc(r.symbol)}</span><span class="rs">D ${sg(r.mD)}</span><span class="rp">$${(r.price ?? 0).toFixed(2)} · ${esc(r.sector || '')}</span></div>`)
+    .map((r) => `<div class="rec"><span class="rt">${esc(r.symbol)}</span><span class="rs">W ${sg(r.mW)}</span><span class="rp">$${(r.price ?? 0).toFixed(2)} · ${esc(r.sector || '')}</span></div>`)
     .join('');
-  return `<div class="reco"><h2 style="margin-top:0">★ Recommendation — top 5 by Mode D</h2><div class="recrow">${cards}</div>
-    <p class="sub" style="margin:8px 0 0">Mode D = A's increment quality + graduated exhaustion cap. Screening aid, not investment advice — confirm live prices and catalyst before acting.</p></div>`;
+  return `<div class="reco"><h2 style="margin-top:0">★ Recommendation — top 5 by Mode W (early)</h2><div class="recrow">${cards}</div>
+    <p class="sub" style="margin:8px 0 0">Mode W = catch the move early (fresh thrust + acceleration + volume surge). Best-predicting mode in the 3-day backtest (Spearman 0.36 vs ≤0.12 for A–D). Screening aid, not investment advice — confirm live prices and catalyst before acting.</p></div>`;
 }
 
 // End-of-report: each mode's top picks side by side.
 function recsByMode(names, n = 8) {
   const modes = [
-    ['D · refined ★', 'mD'],
+    ['W · early ★', 'mW'],
+    ['D · refined', 'mD'],
     ['A · increment', 'mA'],
     ['B · balanced', 'mB'],
     ['C · sustainable', 'mC'],
@@ -112,7 +113,7 @@ function recsByMode(names, n = 8) {
       '</tr>';
   }
   return `<h2>★ Top recommendations by mode</h2>
-    <p class="sub" style="margin:0 0 6px">Each column is that mode's top ${n} picks. D is the recommended mode; A/B/C shown for comparison.</p>
+    <p class="sub" style="margin:0 0 6px">Each column is that mode's top ${n} picks. W (early) is the recommended mode — proven best over the 3-day backtest; D/A/B/C shown for comparison.</p>
     <div style="overflow-x:auto"><table class="recs"><thead><tr><th>#</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
@@ -121,8 +122,8 @@ function scorecard(dir) {
   const positions = loadPositions(dir);
   if (!positions.length) return '';
   const sb = computeScoreboard(positions);
-  const best = ['A', 'B', 'C', 'D'].reduce((a, m) => (sb[m].points > sb[a].points ? m : a), 'D');
-  const rows = ['D', 'A', 'B', 'C']
+  const best = MODE_LIST.reduce((a, m) => (sb[m].points > sb[a].points ? m : a), MODE_LIST[0]);
+  const rows = ['W', 'D', 'A', 'B', 'C']
     .map((m) => {
       const s = sb[m];
       const pc = s.points > 0 ? 'var(--pos)' : s.points < 0 ? 'var(--neg)' : 'var(--muted)';
@@ -181,10 +182,10 @@ export function buildReport(dir = path.resolve('snapshots')) {
   .viz-root table.recs th:nth-child(2){color:var(--pos)}
 </style>
 <h1>Daily momentum ranking — ${esc(latest.date)}</h1>
-<p class="sub">Ranked by Mode D (refined) · A/B/C/D in table · ${latest.count ?? ranked.length} names ($500M–$50B) · price-only · not investment advice</p>
+<p class="sub">Ranked by Mode W (early) — proven best in 3-day backtest · all modes in table · ${latest.count ?? ranked.length} names ($500M–$50B) · price-only · not investment advice</p>
 ${recommendation(ranked)}
 ${scorecard(dir)}
-<h2>Top 20 by Mode D score</h2>
+<h2>Top 20 by Mode W score</h2>
 ${barChart(ranked)}
 ${trendChart(days, latest)}
 <h2>Table — all four modes</h2>

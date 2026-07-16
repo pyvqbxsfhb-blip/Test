@@ -310,6 +310,10 @@ const MODE_WEIGHTS = {
   // RESOLVE A's fade weakness with a graduated 'soft' brake that only bites at
   // genuine exhaustion (extreme RSI, very stretched, or overbought+decelerating).
   refined: { thrust: 0.8, medium: 0.3, accel: 0.5, vadj: 8, vol: 18, cons: 28, brake: 'soft' },
+  // Mode W ('early') — catch the move as it STARTS: heavy fresh thrust +
+  // acceleration + volume surge, minimal established-trend requirement. Enters
+  // a bar or two sooner than A-D (more false starts is the trade-off).
+  early: { thrust: 1.0, medium: 0.1, accel: 1.0, vadj: 4, vol: 22, cons: 8, brake: 'off' },
 };
 
 export function momentumScore(candles, mode = 'increment') {

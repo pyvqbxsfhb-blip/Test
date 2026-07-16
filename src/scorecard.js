@@ -6,7 +6,8 @@ import path from 'path';
 
 export const TARGET_PCT = 11;
 export const MAX_DAYS = 20; // trading days
-export const MODE_KEYS = { A: 'mA', B: 'mB', C: 'mC', D: 'mD' };
+export const MODE_KEYS = { A: 'mA', B: 'mB', C: 'mC', D: 'mD', W: 'mW' };
+export const MODE_LIST = Object.keys(MODE_KEYS);
 
 export function loadPositions(dir) {
   const p = path.join(dir, 'positions.jsonl');
@@ -40,7 +41,7 @@ export function seedFromSnapshots(dir, positions) {
 
 export function computeScoreboard(positions) {
   const sb = {};
-  for (const m of ['A', 'B', 'C', 'D']) {
+  for (const m of MODE_LIST) {
     const ps = positions.filter((p) => p.mode === m);
     const won = ps.filter((p) => p.status === 'won').length;
     const neutral = ps.filter((p) => p.status === 'neutral').length;
