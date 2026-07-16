@@ -5,7 +5,8 @@
   "modes": {
     "A": "increment",
     "B": "balanced",
-    "C": "sustainable"
+    "C": "sustainable",
+    "Z": "consensus"
   },
   "count": 55,
   "names": [
@@ -17,7 +18,8 @@
       "sector": "Health Technology",
       "mA": 92,
       "mB": 73,
-      "mC": 84
+      "mC": 84,
+      "mZ": 100
     },
     {
       "symbol": "CNMD",
@@ -27,7 +29,8 @@
       "sector": "Health Technology",
       "mA": 78,
       "mB": 58,
-      "mC": 71
+      "mC": 71,
+      "mZ": 98
     },
     {
       "symbol": "VG",
@@ -37,7 +40,8 @@
       "sector": "Industrial Services",
       "mA": 76,
       "mB": 62,
-      "mC": 65
+      "mC": 65,
+      "mZ": 96
     },
     {
       "symbol": "TCBK",
@@ -47,7 +51,8 @@
       "sector": "Finance",
       "mA": 72,
       "mB": 54,
-      "mC": 69
+      "mC": 69,
+      "mZ": 94
     },
     {
       "symbol": "PARR",
@@ -57,7 +62,8 @@
       "sector": "Energy Minerals",
       "mA": 65,
       "mB": 47,
-      "mC": 59
+      "mC": 59,
+      "mZ": 90
     },
     {
       "symbol": "SHAK",
@@ -67,7 +73,8 @@
       "sector": "Consumer Services",
       "mA": 65,
       "mB": 57,
-      "mC": 57
+      "mC": 57,
+      "mZ": 91
     },
     {
       "symbol": "TOI",
@@ -77,7 +84,8 @@
       "sector": "Health Services",
       "mA": 62,
       "mB": 55,
-      "mC": 57
+      "mC": 57,
+      "mZ": 90
     },
     {
       "symbol": "CBZ",
@@ -87,7 +95,8 @@
       "sector": "Commercial Services",
       "mA": 59,
       "mB": 49,
-      "mC": 41
+      "mC": 41,
+      "mZ": 84
     },
     {
       "symbol": "PBF",
@@ -97,7 +106,8 @@
       "sector": "Energy Minerals",
       "mA": 56,
       "mB": 32,
-      "mC": 50
+      "mC": 50,
+      "mZ": 78
     },
     {
       "symbol": "RPD",
@@ -107,7 +117,8 @@
       "sector": "Technology Services",
       "mA": 56,
       "mB": 19,
-      "mC": 59
+      "mC": 59,
+      "mZ": 73
     },
     {
       "symbol": "SMWB",
@@ -117,7 +128,8 @@
       "sector": "Technology Services",
       "mA": 55,
       "mB": 33,
-      "mC": 50
+      "mC": 50,
+      "mZ": 78
     },
     {
       "symbol": "NOG",
@@ -127,7 +139,8 @@
       "sector": "Energy Minerals",
       "mA": 51,
       "mB": 42,
-      "mC": 39
+      "mC": 39,
+      "mZ": 79
     },
     {
       "symbol": "LZ",
@@ -137,7 +150,8 @@
       "sector": "Technology Services",
       "mA": 49,
       "mB": 31,
-      "mC": 49
+      "mC": 49,
+      "mZ": 73
     },
     {
       "symbol": "KELYA",
@@ -147,7 +161,8 @@
       "sector": "Commercial Services",
       "mA": 48,
       "mB": 36,
-      "mC": 29
+      "mC": 29,
+      "mZ": 73
     },
     {
       "symbol": "KOS",
@@ -157,7 +172,8 @@
       "sector": "Energy Minerals",
       "mA": 47,
       "mB": 41,
-      "mC": 41
+      "mC": 41,
+      "mZ": 77
     },
     {
       "symbol": "CVI",
@@ -167,7 +183,8 @@
       "sector": "Energy Minerals",
       "mA": 44,
       "mB": 34,
-      "mC": 23
+      "mC": 23,
+      "mZ": 69
     },
     {
       "symbol": "BRZE",
@@ -177,7 +194,8 @@
       "sector": "Technology Services",
       "mA": 43,
       "mB": 34,
-      "mC": 42
+      "mC": 42,
+      "mZ": 74
     },
     {
       "symbol": "SM",
@@ -187,7 +205,8 @@
       "sector": "Energy Minerals",
       "mA": 42,
       "mB": 35,
-      "mC": 33
+      "mC": 33,
+      "mZ": 71
     },
     {
       "symbol": "CLNE",
@@ -197,7 +216,8 @@
       "sector": "Utilities",
       "mA": 42,
       "mB": 34,
-      "mC": 42
+      "mC": 42,
+      "mZ": 73
     },
     {
       "symbol": "ALIT",
@@ -207,7 +227,8 @@
       "sector": "Technology Services",
       "mA": 41,
       "mB": 23,
-      "mC": 22
+      "mC": 22,
+      "mZ": 58
     },
     {
       "symbol": "FIG",
@@ -217,7 +238,8 @@
       "sector": "Technology Services",
       "mA": 40,
       "mB": 32,
-      "mC": 39
+      "mC": 39,
+      "mZ": 66
     },
     {
       "symbol": "TEAM",
@@ -227,7 +249,8 @@
       "sector": "Technology Services",
       "mA": 40,
       "mB": 36,
-      "mC": 22
+      "mC": 22,
+      "mZ": 66
     },
     {
       "symbol": "PBT",
@@ -237,7 +260,8 @@
       "sector": "Miscellaneous",
       "mA": 39,
       "mB": 33,
-      "mC": 20
+      "mC": 20,
+      "mZ": 60
     },
     {
       "symbol": "NSP",
@@ -247,7 +271,8 @@
       "sector": "Commercial Services",
       "mA": 36,
       "mB": 30,
-      "mC": 20
+      "mC": 20,
+      "mZ": 56
     },
     {
       "symbol": "RHI",
@@ -257,7 +282,8 @@
       "sector": "Commercial Services",
       "mA": 34,
       "mB": 31,
-      "mC": 29
+      "mC": 29,
+      "mZ": 60
     },
     {
       "symbol": "ANRO",
@@ -267,7 +293,8 @@
       "sector": "Health Technology",
       "mA": 34,
       "mB": 31,
-      "mC": 32
+      "mC": 32,
+      "mZ": 61
     },
     {
       "symbol": "BRAI",
@@ -277,7 +304,8 @@
       "sector": "Technology Services",
       "mA": 29,
       "mB": 23,
-      "mC": 27
+      "mC": 27,
+      "mZ": 55
     },
     {
       "symbol": "FDS",
@@ -287,7 +315,8 @@
       "sector": "Commercial Services",
       "mA": 28,
       "mB": 27,
-      "mC": 15
+      "mC": 15,
+      "mZ": 51
     },
     {
       "symbol": "KRO",
@@ -297,7 +326,8 @@
       "sector": "Process Industries",
       "mA": 27,
       "mB": 22,
-      "mC": 19
+      "mC": 19,
+      "mZ": 49
     },
     {
       "symbol": "TALO",
@@ -307,7 +337,8 @@
       "sector": "Energy Minerals",
       "mA": 25,
       "mB": 21,
-      "mC": 8
+      "mC": 8,
+      "mZ": 46
     },
     {
       "symbol": "ACDC",
@@ -317,7 +348,8 @@
       "sector": "Industrial Services",
       "mA": 24,
       "mB": 20,
-      "mC": 17
+      "mC": 17,
+      "mZ": 46
     },
     {
       "symbol": "CRGY",
@@ -327,7 +359,8 @@
       "sector": "Energy Minerals",
       "mA": 23,
       "mB": 19,
-      "mC": 2
+      "mC": 2,
+      "mZ": 41
     },
     {
       "symbol": "EVCM",
@@ -337,7 +370,8 @@
       "sector": "Technology Services",
       "mA": 21,
       "mB": 19,
-      "mC": 6
+      "mC": 6,
+      "mZ": 41
     },
     {
       "symbol": "PSNL",
@@ -347,7 +381,8 @@
       "sector": "Health Services",
       "mA": 19,
       "mB": 3,
-      "mC": 11
+      "mC": 11,
+      "mZ": 32
     },
     {
       "symbol": "PLTK",
@@ -357,7 +392,8 @@
       "sector": "Technology Services",
       "mA": 18,
       "mB": 6,
-      "mC": -8
+      "mC": -8,
+      "mZ": 25
     },
     {
       "symbol": "TRUP",
@@ -367,7 +403,8 @@
       "sector": "Finance",
       "mA": 18,
       "mB": 18,
-      "mC": 5
+      "mC": 5,
+      "mZ": 38
     },
     {
       "symbol": "TNDM",
@@ -377,7 +414,8 @@
       "sector": "Health Technology",
       "mA": 18,
       "mB": 16,
-      "mC": 1
+      "mC": 1,
+      "mZ": 36
     },
     {
       "symbol": "APC",
@@ -387,7 +425,8 @@
       "sector": "Distribution Services",
       "mA": 17,
       "mB": 15,
-      "mC": -2
+      "mC": -2,
+      "mZ": 32
     },
     {
       "symbol": "GTM",
@@ -397,7 +436,8 @@
       "sector": "Technology Services",
       "mA": 14,
       "mB": 14,
-      "mC": -2
+      "mC": -2,
+      "mZ": 31
     },
     {
       "symbol": "IT",
@@ -407,7 +447,8 @@
       "sector": "Technology Services",
       "mA": 13,
       "mB": 11,
-      "mC": -3
+      "mC": -3,
+      "mZ": 28
     },
     {
       "symbol": "TMDX",
@@ -417,7 +458,8 @@
       "sector": "Health Technology",
       "mA": 12,
       "mB": 11,
-      "mC": -4
+      "mC": -4,
+      "mZ": 27
     },
     {
       "symbol": "CHA",
@@ -427,7 +469,8 @@
       "sector": "Consumer Non-Durables",
       "mA": 11,
       "mB": 11,
-      "mC": -6
+      "mC": -6,
+      "mZ": 26
     },
     {
       "symbol": "CNXC",
@@ -437,7 +480,8 @@
       "sector": "Technology Services",
       "mA": 10,
       "mB": 9,
-      "mC": -9
+      "mC": -9,
+      "mZ": 21
     },
     {
       "symbol": "ODTX",
@@ -447,7 +491,8 @@
       "sector": "Health Technology",
       "mA": 10,
       "mB": 9,
-      "mC": -8
+      "mC": -8,
+      "mZ": 22
     },
     {
       "symbol": "AIIR",
@@ -457,7 +502,8 @@
       "sector": "Producer Manufacturing",
       "mA": 7,
       "mB": 6,
-      "mC": -8
+      "mC": -8,
+      "mZ": 20
     },
     {
       "symbol": "NGL",
@@ -467,7 +513,8 @@
       "sector": "Industrial Services",
       "mA": 6,
       "mB": 6,
-      "mC": -10
+      "mC": -10,
+      "mZ": 17
     },
     {
       "symbol": "SOC",
@@ -477,7 +524,8 @@
       "sector": "Energy Minerals",
       "mA": 5,
       "mB": -2,
-      "mC": -17
+      "mC": -17,
+      "mZ": 10
     },
     {
       "symbol": "GLOB",
@@ -487,7 +535,8 @@
       "sector": "Technology Services",
       "mA": 4,
       "mB": 4,
-      "mC": -10
+      "mC": -10,
+      "mZ": 15
     },
     {
       "symbol": "VRRM",
@@ -497,7 +546,8 @@
       "sector": "Transportation",
       "mA": 2,
       "mB": 2,
-      "mC": -14
+      "mC": -14,
+      "mZ": 10
     },
     {
       "symbol": "GENI",
@@ -507,7 +557,8 @@
       "sector": "Technology Services",
       "mA": 2,
       "mB": 3,
-      "mC": -11
+      "mC": -11,
+      "mZ": 12
     },
     {
       "symbol": "DUOL",
@@ -517,7 +568,8 @@
       "sector": "Technology Services",
       "mA": 1,
       "mB": -9,
-      "mC": -23
+      "mC": -23,
+      "mZ": 6
     },
     {
       "symbol": "ARX",
@@ -527,7 +579,8 @@
       "sector": "Finance",
       "mA": 1,
       "mB": 1,
-      "mC": -1
+      "mC": -1,
+      "mZ": 16
     },
     {
       "symbol": "FUBO",
@@ -537,7 +590,8 @@
       "sector": "Technology Services",
       "mA": -13,
       "mB": -11,
-      "mC": -23
+      "mC": -23,
+      "mZ": 4
     },
     {
       "symbol": "MH",
@@ -547,7 +601,8 @@
       "sector": "Commercial Services",
       "mA": -15,
       "mB": -13,
-      "mC": -28
+      "mC": -28,
+      "mZ": 2
     },
     {
       "symbol": "NNNN",
@@ -557,7 +612,8 @@
       "sector": "Health Technology",
       "mA": -40,
       "mB": -38,
-      "mC": -49
+      "mC": -49,
+      "mZ": 0
     }
   ]
 }
