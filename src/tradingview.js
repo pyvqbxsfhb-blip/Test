@@ -24,6 +24,15 @@ export const COLUMNS = [
   'Perf.1M',
   'Perf.3M',
   'beta_1_year',
+  // --- orthogonal (non-candle) metrics for sustainability scoring ---
+  'Perf.6M',
+  'Perf.Y',
+  'ADX', // trend strength (Wilder); >25 strong, >40 very strong
+  'Recommend.All', // TradingView aggregate technical rating, -1..+1
+  'SMA50',
+  'SMA200',
+  'float_shares_percent_current',
+  'Volatility.D',
 ];
 
 function rowToObj(item) {
@@ -50,6 +59,14 @@ function rowToObj(item) {
     perf1M: o['Perf.1M'],
     perf3M: o['Perf.3M'],
     beta: o['beta_1_year'],
+    perf6M: o['Perf.6M'],
+    perfY: o['Perf.Y'],
+    adx: o['ADX'],
+    techRating: o['Recommend.All'],
+    sma50: o['SMA50'],
+    sma200: o['SMA200'],
+    floatPct: o['float_shares_percent_current'],
+    volatilityD: o['Volatility.D'],
   };
 }
 

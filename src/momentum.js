@@ -388,6 +388,45 @@ export function momentumScore(candles, mode = 'increment') {
   return { score: Math.round(clamp(raw, -100, 100)), parts, mode, report: r };
 }
 
+// Mode S ('sustained') — ORTHOGONAL to the candle-momentum modes. Scores a
+// scanner ROW (not candles) on proven momentum-PERSISTENCE techniques:
+//   - multi-month momentum factor (Perf 3M/6M/1Y — Jegadeesh-Titman)
+//   - ADX trend strength (Wilder)
+//   - Stage-2 MA alignment (price > 50-MA > 200-MA — Minervini/Weinstein)
+//   - aggregate technical rating (Recommend.All)
+//   - low-float bonus
+// Because it eats different data, it picks different names than A–Z.
+export function sustainedScore(row) {
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const p3 = row.perf3M ?? 0, p6 = row.perf6M ?? 0, pY = row.perfY ?? 0;
+  const parts = {
+    // multi-month relative strength (the proven persistence factor)
+    momentum:
+      (clamp(p3, -30, 150) / 150 * 0.4 +
+        clamp(p6, -30, 250) / 250 * 0.35 +
+        clamp(pY, -50, 400) / 400 * 0.25) * 40,
+    // trend strength: ADX 15->0, 50->22
+    adx: clamp(((row.adx ?? 0) - 15) / 35, 0, 1) * 22,
+    // Stage-2 alignment: price > 50MA > 200MA
+    stage:
+      row.sma50 && row.sma200 && row.price
+        ? row.price > row.sma50 && row.sma50 > row.sma200
+          ? 16
+          : row.price > row.sma50
+            ? 9
+            : row.price > row.sma200
+              ? 4
+              : 0
+        : 0,
+    // aggregate technical rating -1..+1 -> 0..12
+    rating: ((clamp(row.techRating ?? 0, -1, 1) + 1) / 2) * 12,
+    // low-float bonus (explosive, sustainable squeezes)
+    float: row.floatPct == null ? 0 : row.floatPct < 40 ? 10 : row.floatPct < 70 ? 5 : 0,
+  };
+  const raw = Object.values(parts).reduce((a, b) => a + b, 0);
+  return { score: Math.round(clamp(raw, 0, 100)), parts };
+}
+
 // Mode Z (consensus / meta): for a day's pool of scored names, assign each an
 // mZ = average cross-sectional percentile across the base modes. A name ranked
 // highly by ALL modes scores ~100; high in one but low in others scores middling.

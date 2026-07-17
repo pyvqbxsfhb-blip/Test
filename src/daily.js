@@ -12,7 +12,7 @@
 import fs from 'fs';
 import path from 'path';
 import { launchBrowser, openSite, scanGainers, getDailyBars } from './tradingview.js';
-import { momentumScore, assignConsensus } from './momentum.js';
+import { momentumScore, assignConsensus, sustainedScore } from './momentum.js';
 import { buildReport } from './report.js';
 import { loadPositions, seedFromSnapshots, resolvePositions, savePositions, computeScoreboard } from './track.js';
 import { MODE_LIST } from './scorecard.js';
@@ -61,6 +61,7 @@ async function main() {
         changePct: r.changePct,
         marketCap: r.marketCap,
         sector: r.sector,
+        adx: r.adx, perf3M: r.perf3M, perf6M: r.perf6M, perfY: r.perfY, floatPct: r.floatPct,
         mA: momentumScore(candles, 'increment').score,
         mB: momentumScore(candles, 'balanced').score,
         mC: momentumScore(candles, 'sustainable').score,
@@ -68,6 +69,7 @@ async function main() {
         mW: momentumScore(candles, 'early').score,
         mX: momentumScore(candles, 'breakout').score,
         mY: momentumScore(candles, 'pullback').score,
+        mS: sustainedScore(r).score, // ORTHOGONAL: multi-month RS + ADX + stage-2 + rating + float
       });
     }
     assignConsensus(scored); // Mode Z (meta) from the base-mode scores
@@ -77,7 +79,7 @@ async function main() {
     // ---- persist today's record + time series ----
     const record = {
       date, capturedAt, band: '500M-50B',
-      modes: { A: 'increment', B: 'balanced', C: 'sustainable', D: 'refined', W: 'early', X: 'breakout', Y: 'pullback', Z: 'consensus' },
+      modes: { A: 'increment', B: 'balanced', C: 'sustainable', D: 'refined', W: 'early', X: 'breakout', Y: 'pullback', Z: 'consensus', S: 'sustained' },
       count: ranked.length, names: ranked,
     };
     fs.writeFileSync(path.join(dir, `daily-${date}.json`), JSON.stringify(record, null, 2));
@@ -86,7 +88,7 @@ async function main() {
       ? fs.readFileSync(histPath, 'utf8').split('\n').filter((l) => l && !l.includes(`"date":"${date}"`))
       : [];
     for (const r of ranked)
-      lines.push(JSON.stringify({ date, symbol: r.symbol, price: r.price, mA: r.mA, mB: r.mB, mC: r.mC, mD: r.mD, mW: r.mW, mX: r.mX, mY: r.mY, mZ: r.mZ }));
+      lines.push(JSON.stringify({ date, symbol: r.symbol, price: r.price, mA: r.mA, mB: r.mB, mC: r.mC, mD: r.mD, mW: r.mW, mX: r.mX, mY: r.mY, mZ: r.mZ, mS: r.mS }));
     fs.writeFileSync(histPath, lines.join('\n') + '\n');
 
     // ---- mode scorecard: open each mode's #1 pick, resolve open positions ----

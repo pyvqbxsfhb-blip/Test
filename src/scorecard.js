@@ -6,7 +6,7 @@ import path from 'path';
 
 export const TARGET_PCT = 11;
 export const MAX_DAYS = 20; // trading days
-export const MODE_KEYS = { A: 'mA', B: 'mB', C: 'mC', D: 'mD', W: 'mW', X: 'mX', Y: 'mY', Z: 'mZ' };
+export const MODE_KEYS = { A: 'mA', B: 'mB', C: 'mC', D: 'mD', W: 'mW', X: 'mX', Y: 'mY', Z: 'mZ', S: 'mS' };
 export const MODE_LIST = Object.keys(MODE_KEYS);
 
 export function loadPositions(dir) {

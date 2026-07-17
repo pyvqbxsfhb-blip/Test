@@ -71,9 +71,9 @@ function trendChart(days, latest) {
 
 function table(rows) {
   const body = rows
-    .map((r, i) => `<tr><td>${i + 1}</td><td class="mono">${esc(r.symbol)}</td><td class="num d">${sg(r.mW)}</td><td class="num">${sg(r.mZ)}</td><td class="num">${sg(r.mX)}</td><td class="num">${sg(r.mY)}</td><td class="num">${sg(r.mD)}</td><td class="num">${sg(r.mA)}</td><td class="num">${sg(r.mB)}</td><td class="num">${sg(r.mC)}</td><td class="num">$${(r.price ?? 0).toFixed(2)}</td><td class="num">${(r.changePct >= 0 ? '+' : '')}${(r.changePct ?? 0).toFixed(1)}%</td><td>${esc(r.sector || '')}</td></tr>`)
+    .map((r, i) => `<tr><td>${i + 1}</td><td class="mono">${esc(r.symbol)}</td><td class="num d">${sg(r.mW)}</td><td class="num s">${sg(r.mS)}</td><td class="num">${sg(r.mZ)}</td><td class="num">${sg(r.mX)}</td><td class="num">${sg(r.mY)}</td><td class="num">${sg(r.mD)}</td><td class="num">${sg(r.mA)}</td><td class="num">${sg(r.mB)}</td><td class="num">${sg(r.mC)}</td><td class="num">$${(r.price ?? 0).toFixed(2)}</td><td class="num">${(r.changePct >= 0 ? '+' : '')}${(r.changePct ?? 0).toFixed(1)}%</td><td>${esc(r.sector || '')}</td></tr>`)
     .join('\n');
-  return `<div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Ticker</th><th>W★</th><th>Z</th><th>X</th><th>Y</th><th>D</th><th>A</th><th>B</th><th>C</th><th>Price</th><th>Chg</th><th>Sector</th></tr></thead><tbody>${body}</tbody></table></div>`;
+  return `<div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Ticker</th><th>W★</th><th>S</th><th>Z</th><th>X</th><th>Y</th><th>D</th><th>A</th><th>B</th><th>C</th><th>Price</th><th>Chg</th><th>Sector</th></tr></thead><tbody>${body}</tbody></table></div>`;
 }
 
 function recommendation(rows) {
@@ -89,6 +89,7 @@ function recommendation(rows) {
 function recsByMode(names, n = 8) {
   const modes = [
     ['W · early ★', 'mW'],
+    ['S · sustained ⊥', 'mS'],
     ['Z · consensus', 'mZ'],
     ['X · breakout', 'mX'],
     ['Y · pullback', 'mY'],
@@ -126,7 +127,7 @@ function scorecard(dir) {
   if (!positions.length) return '';
   const sb = computeScoreboard(positions);
   const best = MODE_LIST.reduce((a, m) => (sb[m].points > sb[a].points ? m : a), MODE_LIST[0]);
-  const rows = ['W', 'Z', 'X', 'Y', 'D', 'A', 'B', 'C']
+  const rows = ['W', 'S', 'Z', 'X', 'Y', 'D', 'A', 'B', 'C']
     .map((m) => {
       const s = sb[m];
       const pc = s.points > 0 ? 'var(--pos)' : s.points < 0 ? 'var(--neg)' : 'var(--muted)';
@@ -180,7 +181,7 @@ export function buildReport(dir = path.resolve('snapshots')) {
   .viz-root table{border-collapse:collapse;width:100%;margin-top:8px;font-size:12px}
   .viz-root th,.viz-root td{padding:4px 8px;border-bottom:1px solid var(--grid);text-align:left}
   .viz-root th{color:var(--muted);font-weight:600} .viz-root .num,.viz-root .mono{text-align:right;font-variant-numeric:tabular-nums}
-  .viz-root .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;text-align:left;font-weight:600} .viz-root td.d{color:var(--pos);font-weight:700}
+  .viz-root .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;text-align:left;font-weight:600} .viz-root td.d{color:var(--pos);font-weight:700} .viz-root td.s{color:var(--series-5,#4a3aa7);font-weight:700}
   .viz-root table.recs td{text-align:left} .viz-root table.recs .rk{color:var(--muted)} .viz-root .sc{color:var(--pos);font-variant-numeric:tabular-nums;font-size:11px}
   .viz-root table.recs th:nth-child(2){color:var(--pos)}
 </style>
