@@ -30,7 +30,7 @@ async function candles(page, sym, cache) {
   cache.set(sym, out); return out;
 }
 
-const MODES = [['A', 'mA'], ['B', 'mB'], ['C', 'mC'], ['D', 'mD'], ['W', 'mW'], ['Z', 'mZ']];
+const MODES = [['A', 'mA'], ['B', 'mB'], ['C', 'mC'], ['D', 'mD'], ['W', 'mW'], ['X', 'mX'], ['Y', 'mY'], ['Z', 'mZ']];
 
 async function main() {
   const b = await launchBrowser();
@@ -48,8 +48,11 @@ async function main() {
         if (!fwd.length) continue;
         const peakFwd = +((Math.max(...fwd.map((x) => x.h ?? x.c)) / n.price - 1) * 100).toFixed(1);
         const asOf = c.filter((x) => x.t <= entEnd);
-        const mW = asOf.length >= 20 ? momentumScore(asOf, 'early').score : null;
-        rows.push({ date: day.date, symbol: n.symbol, mA: n.mA, mB: n.mB, mC: n.mC, mD: n.mD, mW, peakFwd, hit: peakFwd >= 11 });
+        const ok = asOf.length >= 20;
+        const mW = ok ? momentumScore(asOf, 'early').score : null;
+        const mX = ok ? momentumScore(asOf, 'breakout').score : null;
+        const mY = ok ? momentumScore(asOf, 'pullback').score : null;
+        rows.push({ date: day.date, symbol: n.symbol, mA: n.mA, mB: n.mB, mC: n.mC, mD: n.mD, mW, mX, mY, peakFwd, hit: peakFwd >= 11 });
       }
       assignConsensus(rows.filter((r) => r.date === day.date)); // sets mZ per day
       process.stderr.write(`  ${day.date}: ${rows.filter((r) => r.date === day.date).length} names\n`);

@@ -50,7 +50,7 @@ async function main() {
       (r) => r.marketCap >= DEFAULTS.marketCapMin && r.marketCap <= DEFAULTS.marketCapMax
     );
     const pool = sized.slice(0, o.enrich); // highest-change in-band names to score
-    process.stderr.write(`▶ scoring top ${pool.length} in all 4 modes (A/B/C/D) …\n`);
+    process.stderr.write(`▶ scoring top ${pool.length} in all 8 modes (A-Z) …\n`);
     const scored = [];
     for (const r of pool) {
       const candles = await getDailyBars(page, r.fullSymbol, 60);
@@ -66,6 +66,8 @@ async function main() {
         mC: momentumScore(candles, 'sustainable').score,
         mD: momentumScore(candles, 'refined').score,
         mW: momentumScore(candles, 'early').score,
+        mX: momentumScore(candles, 'breakout').score,
+        mY: momentumScore(candles, 'pullback').score,
       });
     }
     assignConsensus(scored); // Mode Z (meta) from the base-mode scores
@@ -75,7 +77,7 @@ async function main() {
     // ---- persist today's record + time series ----
     const record = {
       date, capturedAt, band: '500M-50B',
-      modes: { A: 'increment', B: 'balanced', C: 'sustainable', D: 'refined', W: 'early', Z: 'consensus' },
+      modes: { A: 'increment', B: 'balanced', C: 'sustainable', D: 'refined', W: 'early', X: 'breakout', Y: 'pullback', Z: 'consensus' },
       count: ranked.length, names: ranked,
     };
     fs.writeFileSync(path.join(dir, `daily-${date}.json`), JSON.stringify(record, null, 2));
@@ -84,7 +86,7 @@ async function main() {
       ? fs.readFileSync(histPath, 'utf8').split('\n').filter((l) => l && !l.includes(`"date":"${date}"`))
       : [];
     for (const r of ranked)
-      lines.push(JSON.stringify({ date, symbol: r.symbol, price: r.price, mA: r.mA, mB: r.mB, mC: r.mC, mD: r.mD, mW: r.mW, mZ: r.mZ }));
+      lines.push(JSON.stringify({ date, symbol: r.symbol, price: r.price, mA: r.mA, mB: r.mB, mC: r.mC, mD: r.mD, mW: r.mW, mX: r.mX, mY: r.mY, mZ: r.mZ }));
     fs.writeFileSync(histPath, lines.join('\n') + '\n');
 
     // ---- mode scorecard: open each mode's #1 pick, resolve open positions ----

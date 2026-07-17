@@ -314,6 +314,13 @@ const MODE_WEIGHTS = {
   // acceleration + volume surge, minimal established-trend requirement. Enters
   // a bar or two sooner than A-D (more false starts is the trade-off).
   early: { thrust: 1.0, medium: 0.1, accel: 1.0, vadj: 4, vol: 22, cons: 8, brake: 'off' },
+  // Mode X ('breakout') — buy the breakout: at/near the 20-day high with volume
+  // expansion + thrust (bo weight rewards proximity to the high).
+  breakout: { thrust: 0.5, medium: 0.3, accel: 0.4, vadj: 4, vol: 16, cons: 10, brake: 'off', bo: 1.0 },
+  // Mode Y ('pullback') — buy the DIP in an established uptrend: stacked + rising
+  // slope + RSI cooled to ~40-58 near a rising MA. Opposite temperament to W;
+  // low thrust, overbought braked (dip weight rewards the cooled-in-uptrend state).
+  pullback: { thrust: 0.15, medium: 0.4, accel: 0.2, vadj: 2, vol: 6, cons: 6, brake: 'on', dip: 1.0 },
 };
 
 export function momentumScore(candles, mode = 'increment') {
@@ -324,6 +331,15 @@ export function momentumScore(candles, mode = 'increment') {
     roc10 = r.roc10 ?? 0;
   const accel = 2 * roc5 - roc10; // last 5 bars vs the 5 before them
 
+  // breakout proximity (1 = at 20d high) and pullback-in-uptrend magnitude
+  const boMag = r.pctBelow20High == null ? 0 : clamp(1 - r.pctBelow20High / 6, -0.5, 1);
+  let dipMag = 0;
+  if ((W.dip || 0) && r.stacked && r.slope20 > 0 && r.rsi14 != null) {
+    const rsiFit = r.rsi14 >= 38 && r.rsi14 <= 62 ? Math.max(0, 1 - Math.abs(r.rsi14 - 48) / 14) : 0;
+    const pulled = r.extension20 != null && r.extension20 < 8 ? 1 : 0.4; // near a rising MA
+    dipMag = rsiFit * pulled;
+  }
+
   const parts = {
     thrust: W.thrust * clamp(roc5, -25, 25), // recent push (increment)
     medium: W.medium * clamp(roc10, -40, 40), // medium-term trend
@@ -333,6 +349,8 @@ export function momentumScore(candles, mode = 'increment') {
     consistency: r.upDayRatio != null ? (r.upDayRatio - 0.5) * W.cons : 0, // steady climb
     breakout:
       r.pctBelow20High == null ? 0 : r.pctBelow20High <= 1 ? 6 : r.pctBelow20High > 10 ? -4 : 0,
+    breakoutX: (W.bo || 0) * boMag * 18, // Mode X: reward proximity to the 20d high
+    pullbackY: (W.dip || 0) * dipMag * 30, // Mode Y: reward cooled-in-uptrend dip
     structure:
       (r.stacked ? 6 : 0) + (r.slope20 > 0 ? 4 : 0) + 1.0 * clamp(r.consecUp || 0, 0, 6),
   };
