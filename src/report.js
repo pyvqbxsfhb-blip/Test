@@ -6,7 +6,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { loadPositions, computeScoreboard, TARGET_PCT, MAX_DAYS, MODE_LIST } from './scorecard.js';
+import { loadPositions, computeScoreboard, TARGET_PCT, MAX_DAYS, TRACKED_MODES } from './scorecard.js';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const sg = (v) => (v == null ? '—' : (v >= 0 ? '+' : '') + v);
@@ -71,9 +71,9 @@ function trendChart(days, latest) {
 
 function table(rows) {
   const body = rows
-    .map((r, i) => `<tr><td>${i + 1}</td><td class="mono">${esc(r.symbol)}</td><td class="num d">${sg(r.mW)}</td><td class="num s">${sg(r.mS)}</td><td class="num">${sg(r.mZ)}</td><td class="num">${sg(r.mX)}</td><td class="num">${sg(r.mY)}</td><td class="num">${sg(r.mD)}</td><td class="num">${sg(r.mA)}</td><td class="num">${sg(r.mB)}</td><td class="num">${sg(r.mC)}</td><td class="num">$${(r.price ?? 0).toFixed(2)}</td><td class="num">${(r.changePct >= 0 ? '+' : '')}${(r.changePct ?? 0).toFixed(1)}%</td><td>${esc(r.sector || '')}</td></tr>`)
+    .map((r, i) => `<tr><td>${i + 1}</td><td class="mono">${esc(r.symbol)}</td><td class="num d">${sg(r.mW)}</td><td class="num s">${sg(r.mS)}</td><td class="num">${sg(r.mZ)}</td><td class="num">${sg(r.mX)}</td><td class="num">$${(r.price ?? 0).toFixed(2)}</td><td class="num">${(r.changePct >= 0 ? '+' : '')}${(r.changePct ?? 0).toFixed(1)}%</td><td>${esc(r.sector || '')}</td></tr>`)
     .join('\n');
-  return `<div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Ticker</th><th>W★</th><th>S</th><th>Z</th><th>X</th><th>Y</th><th>D</th><th>A</th><th>B</th><th>C</th><th>Price</th><th>Chg</th><th>Sector</th></tr></thead><tbody>${body}</tbody></table></div>`;
+  return `<div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Ticker</th><th>W★</th><th>S⊥</th><th>Z</th><th>X</th><th>Price</th><th>Chg</th><th>Sector</th></tr></thead><tbody>${body}</tbody></table></div>`;
 }
 
 function recommendation(rows) {
@@ -92,11 +92,6 @@ function recsByMode(names, n = 8) {
     ['S · sustained ⊥', 'mS'],
     ['Z · consensus', 'mZ'],
     ['X · breakout', 'mX'],
-    ['Y · pullback', 'mY'],
-    ['D · refined', 'mD'],
-    ['A · increment', 'mA'],
-    ['B · balanced', 'mB'],
-    ['C · sustainable', 'mC'],
   ];
   const cols = modes.map(([label, key]) => ({
     label,
@@ -117,7 +112,7 @@ function recsByMode(names, n = 8) {
       '</tr>';
   }
   return `<h2>★ Top recommendations by mode</h2>
-    <p class="sub" style="margin:0 0 6px">Each column is that mode's top ${n} picks. W (early) is the recommended mode — proven best over the 3-day backtest; D/A/B/C shown for comparison.</p>
+    <p class="sub" style="margin:0 0 6px">Each column is that mode's top ${n} picks. W (thrust) & S (sustained, orthogonal) are the two poles; Z=consensus, X=breakout. A-D/Y retired from tracking.</p>
     <div style="overflow-x:auto"><table class="recs"><thead><tr><th>#</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
@@ -126,8 +121,8 @@ function scorecard(dir) {
   const positions = loadPositions(dir);
   if (!positions.length) return '';
   const sb = computeScoreboard(positions);
-  const best = MODE_LIST.reduce((a, m) => (sb[m].points > sb[a].points ? m : a), MODE_LIST[0]);
-  const rows = ['W', 'S', 'Z', 'X', 'Y', 'D', 'A', 'B', 'C']
+  const best = TRACKED_MODES.reduce((a, m) => (sb[m].points > sb[a].points ? m : a), TRACKED_MODES[0]);
+  const rows = TRACKED_MODES
     .map((m) => {
       const s = sb[m];
       const pc = s.points > 0 ? 'var(--pos)' : s.points < 0 ? 'var(--neg)' : 'var(--muted)';

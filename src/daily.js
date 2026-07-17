@@ -15,7 +15,7 @@ import { launchBrowser, openSite, scanGainers, getDailyBars } from './tradingvie
 import { momentumScore, assignConsensus, sustainedScore } from './momentum.js';
 import { buildReport } from './report.js';
 import { loadPositions, seedFromSnapshots, resolvePositions, savePositions, computeScoreboard } from './track.js';
-import { MODE_LIST } from './scorecard.js';
+import { TRACKED_MODES, MODE_KEYS } from './scorecard.js';
 import { DEFAULTS } from './config.js';
 
 const MODES = ['increment', 'balanced', 'sustainable']; // A, B, C
@@ -110,15 +110,16 @@ async function main() {
   const topBy = (key) => [...ranked].sort((a, b) => b[key] - a[key]).slice(0, o.top);
   console.log(`# ${date}  (${ranked.length} names, $500M-$50B)  -> ${dailyPath}`);
   console.log(`# report -> ${rep.out}`);
-  console.log(pad('RANK', 5) + pad('W:early★', 14) + pad('D:refined', 14) + pad('A:incr', 14) + pad('B:bal', 14) + 'C:sust');
-  const W = topBy('mW'), D = topBy('mD'), A = topBy('mA'), B = topBy('mB'), C = topBy('mC');
+  const labels = { W: 'W:thrust★', S: 'S:sustained⊥', Z: 'Z:consensus', X: 'X:breakout' };
+  console.log(pad('RANK', 5) + TRACKED_MODES.map((m) => pad(labels[m], 15)).join(''));
+  const cols = Object.fromEntries(TRACKED_MODES.map((m) => [m, topBy(MODE_KEYS[m])]));
   const fmt = (r, k) => (r ? `${r.symbol} ${r[k] >= 0 ? '+' : ''}${r[k]}` : '');
   for (let i = 0; i < o.top; i++)
-    console.log(pad(i + 1, 5) + pad(fmt(W[i], 'mW'), 14) + pad(fmt(D[i], 'mD'), 14) + pad(fmt(A[i], 'mA'), 14) + pad(fmt(B[i], 'mB'), 14) + fmt(C[i], 'mC'));
+    console.log(pad(i + 1, 5) + TRACKED_MODES.map((m) => pad(fmt(cols[m][i], MODE_KEYS[m]), 15)).join(''));
 
   console.log('\n# mode scorecard (target +11% / 20d)');
   console.log(pad('MODE', 6) + pad('PTS', 6) + pad('W', 4) + pad('N', 4) + pad('L', 4) + 'OPEN');
-  for (const m of MODE_LIST) {
+  for (const m of TRACKED_MODES) {
     const s = scoreboard[m] || { points: 0, won: 0, neutral: 0, lost: 0, open: 0 };
     console.log(pad(m, 6) + pad((s.points >= 0 ? '+' : '') + s.points, 6) + pad(s.won, 4) + pad(s.neutral, 4) + pad(s.lost, 4) + s.open);
   }

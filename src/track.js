@@ -9,7 +9,7 @@
 import path from 'path';
 import { getDailyBars } from './tradingview.js';
 import {
-  TARGET_PCT, MAX_DAYS, MODE_LIST, loadPositions, savePositions, seedFromSnapshots, computeScoreboard,
+  TARGET_PCT, MAX_DAYS, TRACKED_MODES, loadPositions, savePositions, seedFromSnapshots, computeScoreboard,
 } from './scorecard.js';
 
 export { loadPositions, savePositions, seedFromSnapshots, computeScoreboard, TARGET_PCT, MAX_DAYS };
@@ -76,7 +76,7 @@ if (process.argv[1] && process.argv[1].endsWith('track.js')) {
   const pad = (s, n) => String(s).padEnd(n).slice(0, n);
   console.log(`\nMode scorecard (target +${TARGET_PCT}% within ${MAX_DAYS}d):`);
   console.log(pad('MODE', 7) + pad('POINTS', 8) + pad('W', 4) + pad('N', 4) + pad('L', 4) + pad('OPEN', 6) + 'winRate');
-  for (const m of MODE_LIST) {
+  for (const m of TRACKED_MODES) {
     const s = sb[m];
     console.log(pad(m, 7) + pad((s.points >= 0 ? '+' : '') + s.points, 8) + pad(s.won, 4) + pad(s.neutral, 4) + pad(s.lost, 4) + pad(s.open, 6) + (s.winRate == null ? '—' : s.winRate));
   }

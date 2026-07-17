@@ -8,6 +8,10 @@ export const TARGET_PCT = 11;
 export const MAX_DAYS = 20; // trading days
 export const MODE_KEYS = { A: 'mA', B: 'mB', C: 'mC', D: 'mD', W: 'mW', X: 'mX', Y: 'mY', Z: 'mZ', S: 'mS' };
 export const MODE_LIST = Object.keys(MODE_KEYS);
+// The lean, genuinely-distinct set we actually TRACK (open positions / score):
+// W thrust · S sustained (orthogonal) · Z consensus · X breakout.
+// A/B/C/D/Y are still computed (Z's consensus base) but retired from tracking.
+export const TRACKED_MODES = ['W', 'S', 'Z', 'X'];
 
 export function loadPositions(dir) {
   const p = path.join(dir, 'positions.jsonl');
@@ -25,7 +29,8 @@ export function seedFromSnapshots(dir, positions) {
   for (const f of files) {
     const rec = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
     const names = rec.names || rec.ranking || [];
-    for (const [mode, key] of Object.entries(MODE_KEYS)) {
+    for (const mode of TRACKED_MODES) {
+      const key = MODE_KEYS[mode];
       const valid = names.filter((r) => r[key] != null);
       if (!valid.length) continue;
       const top = valid.reduce((a, b) => (b[key] > a[key] ? b : a));
@@ -41,7 +46,7 @@ export function seedFromSnapshots(dir, positions) {
 
 export function computeScoreboard(positions) {
   const sb = {};
-  for (const m of MODE_LIST) {
+  for (const m of TRACKED_MODES) {
     const ps = positions.filter((p) => p.mode === m);
     const won = ps.filter((p) => p.status === 'won').length;
     const neutral = ps.filter((p) => p.status === 'neutral').length;
