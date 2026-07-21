@@ -140,7 +140,7 @@ function scorecard(dir) {
     .join('');
   return `<h2>Mode scorecard — does it work? (target +${TARGET_PCT}% within ${MAX_DAYS}d)</h2>
     <table><thead><tr><th>Mode</th><th>Points</th><th>Won</th><th>Neut</th><th>Lost</th><th>Open</th><th>Win%</th><th>Avg d→win</th></tr></thead><tbody>${rows}</tbody></table>
-    <p class="sub" style="margin:6px 0 0">+1 if a mode's #1 daily pick hits +${TARGET_PCT}% (intraday) before day ${MAX_DAYS}; 0 if it ends positive but short; −1 if negative at day ${MAX_DAYS}.</p>
+    <p class="sub" style="margin:6px 0 0">Buy = captured overnight price +5% (realistic fill). Entry day excluded. +1 if it hits +${TARGET_PCT}% from that buy before day ${MAX_DAYS}; 0 if positive but short; −1 if negative at day ${MAX_DAYS}.</p>
     ${open ? `<h2>Open positions (${openList.length} tracked · up to 4/day × 20d)</h2><div style="max-height:420px;overflow:auto;border:1px solid var(--grid);border-radius:8px"><table><thead><tr><th>Mode</th><th>Ticker</th><th>Entry</th><th>@</th><th>Peak</th><th>Now</th><th>Day</th></tr></thead><tbody>${open}</tbody></table></div>` : ''}`;
 }
 

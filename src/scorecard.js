@@ -6,6 +6,9 @@ import path from 'path';
 
 export const TARGET_PCT = 11;
 export const MAX_DAYS = 20; // trading days
+// You capture an overnight price but realistically fill ~5% higher at the open,
+// so the assumed buy = capture * (1 + ENTRY_SLIP), and gains are measured from it.
+export const ENTRY_SLIP = 0.05;
 export const MODE_KEYS = { A: 'mA', B: 'mB', C: 'mC', D: 'mD', W: 'mW', X: 'mX', Y: 'mY', Z: 'mZ', S: 'mS' };
 export const MODE_LIST = Object.keys(MODE_KEYS);
 // The lean, genuinely-distinct set we actually TRACK (open positions / score):

@@ -9,7 +9,7 @@
 import path from 'path';
 import { getDailyBars } from './tradingview.js';
 import {
-  TARGET_PCT, MAX_DAYS, TRACKED_MODES, loadPositions, savePositions, seedFromSnapshots, computeScoreboard,
+  TARGET_PCT, MAX_DAYS, ENTRY_SLIP, TRACKED_MODES, loadPositions, savePositions, seedFromSnapshots, computeScoreboard,
 } from './scorecard.js';
 
 export { loadPositions, savePositions, seedFromSnapshots, computeScoreboard, TARGET_PCT, MAX_DAYS };
@@ -35,20 +35,23 @@ export async function resolvePositions(page, positions) {
     if (pos.status !== 'open') continue;
     const candles = await candlesFor(page, pos.symbol, cache);
     if (!candles) continue;
-    const entT = Date.parse(pos.entryDate + 'T00:00:00Z') / 1000;
-    const since = candles.filter((c) => c.t >= entT);
-    if (!since.length || !pos.entryPrice) continue;
+    if (!pos.entryPrice) continue;
+    // EXCLUDE the entry day (day 0) — a same-day move isn't realistically catchable.
+    const since = candles.filter((c) => isoDate(c.t) > pos.entryDate);
+    if (!since.length) continue; // no post-entry bar yet -> stay open
+    // Assume the actual fill is ~5% above the captured overnight price.
+    const buy = pos.entryPrice * (1 + ENTRY_SLIP);
+    pos.buyPrice = +buy.toFixed(4);
     const peakHigh = Math.max(...since.map((c) => c.h ?? c.c));
     const lastClose = since[since.length - 1].c;
-    pos.peakPct = +((peakHigh / pos.entryPrice - 1) * 100).toFixed(1);
-    pos.lastPct = +((lastClose / pos.entryPrice - 1) * 100).toFixed(1);
-    pos.barsHeld = since.length - 1; // trading days after entry
+    pos.peakPct = +((peakHigh / buy - 1) * 100).toFixed(1);
+    pos.lastPct = +((lastClose / buy - 1) * 100).toFixed(1);
+    pos.barsHeld = since.length; // trading days after the entry day (day 1, 2, …)
     if (pos.peakPct >= TARGET_PCT) {
-      // exact day the +TARGET% was first crossed (0 = entry day) — "caught early?"
-      const tgt = pos.entryPrice * (1 + TARGET_PCT / 100);
+      const tgt = buy * (1 + TARGET_PCT / 100);
       const idx = since.findIndex((c) => (c.h ?? c.c) >= tgt);
       pos.status = 'won'; pos.points = 1;
-      pos.daysToTarget = idx >= 0 ? idx : pos.barsHeld;
+      pos.daysToTarget = idx >= 0 ? idx + 1 : pos.barsHeld; // 1 = next trading day
       pos.resolvedDate = isoDate(since[idx >= 0 ? idx : since.length - 1].t);
     } else if (pos.barsHeld >= MAX_DAYS) {
       if (pos.lastPct > 0) { pos.status = 'neutral'; pos.points = 0; }
