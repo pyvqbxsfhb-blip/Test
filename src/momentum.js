@@ -427,6 +427,32 @@ export function sustainedScore(row) {
   return { score: Math.round(clamp(raw, 0, 100)), parts };
 }
 
+// Mode I ('impact') — MAGNITUDE of the move: how much real money/scale is
+// behind it. Big dollar-volume + volume surge + pop. Favours liquid, high-
+// conviction moves (institutional-scale), not thin spikes.
+export function impactScore(row) {
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const vt = row.valueTraded ?? 0; // today's traded $ value
+  const dollarVol = vt > 0 ? clamp((Math.log10(vt) - 6) / 4, 0, 1) : 0; // $1M->0, $10B->1
+  const relVol = clamp(((row.relVolume ?? 1) - 1) / 5, 0, 1); // 1x->0, 6x+->1
+  const move = clamp((row.changePct ?? 0) / 25, 0, 1);
+  const parts = { dollarVol: dollarVol * 50, relVol: relVol * 25, move: move * 25 };
+  return { score: Math.round(clamp(parts.dollarVol + parts.relVol + parts.move, 0, 100)), parts };
+}
+
+// Mode F ('fomo') — CROWD-CHASE proxy (price/volume sentiment, not social):
+// relative-volume surge + opening gap + pop magnitude = "everyone is piling in
+// right now". Favours explosive spikes regardless of size. (True social
+// sentiment would need an external feed — this is the behavioural footprint.)
+export function fomoScore(row) {
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const relVol = clamp(((row.relVolume ?? 1) - 1) / 6, 0, 1); // steeper: crowd surge
+  const gap = clamp((row.gap ?? 0) / 15, 0, 1); // gap-up chase
+  const move = clamp((row.changePct ?? 0) / 25, 0, 1);
+  const parts = { relVol: relVol * 40, gap: gap * 35, move: move * 25 };
+  return { score: Math.round(clamp(parts.relVol + parts.gap + parts.move, 0, 100)), parts };
+}
+
 // Mode Z (consensus / meta): for a day's pool of scored names, assign each an
 // mZ = average cross-sectional percentile across the base modes. A name ranked
 // highly by ALL modes scores ~100; high in one but low in others scores middling.

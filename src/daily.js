@@ -12,7 +12,7 @@
 import fs from 'fs';
 import path from 'path';
 import { launchBrowser, openSite, scanGainers, getDailyBars } from './tradingview.js';
-import { momentumScore, assignConsensus, sustainedScore } from './momentum.js';
+import { momentumScore, assignConsensus, sustainedScore, impactScore, fomoScore } from './momentum.js';
 import { buildReport } from './report.js';
 import { loadPositions, seedFromSnapshots, resolvePositions, savePositions, computeScoreboard } from './track.js';
 import { TRACKED_MODES, MODE_KEYS } from './scorecard.js';
@@ -62,6 +62,7 @@ async function main() {
         marketCap: r.marketCap,
         sector: r.sector,
         adx: r.adx, perf3M: r.perf3M, perf6M: r.perf6M, perfY: r.perfY, floatPct: r.floatPct,
+        valueTraded: r.valueTraded, gap: r.gap, relVolume: r.relVolume,
         mA: momentumScore(candles, 'increment').score,
         mB: momentumScore(candles, 'balanced').score,
         mC: momentumScore(candles, 'sustainable').score,
@@ -70,6 +71,8 @@ async function main() {
         mX: momentumScore(candles, 'breakout').score,
         mY: momentumScore(candles, 'pullback').score,
         mS: sustainedScore(r).score, // ORTHOGONAL: multi-month RS + ADX + stage-2 + rating + float
+        mI: impactScore(r).score, // magnitude: $ volume + rel-vol + move
+        mF: fomoScore(r).score, // crowd-chase proxy: rel-vol surge + gap + pop
       });
     }
     assignConsensus(scored); // Mode Z (meta) from the base-mode scores
@@ -79,7 +82,7 @@ async function main() {
     // ---- persist today's record + time series ----
     const record = {
       date, capturedAt, band: '500M-50B',
-      modes: { A: 'increment', B: 'balanced', C: 'sustainable', D: 'refined', W: 'early', X: 'breakout', Y: 'pullback', Z: 'consensus', S: 'sustained' },
+      modes: { A: 'increment', B: 'balanced', C: 'sustainable', D: 'refined', W: 'early', X: 'breakout', Y: 'pullback', Z: 'consensus', S: 'sustained', I: 'impact', F: 'fomo' },
       count: ranked.length, names: ranked,
     };
     fs.writeFileSync(path.join(dir, `daily-${date}.json`), JSON.stringify(record, null, 2));
@@ -88,7 +91,7 @@ async function main() {
       ? fs.readFileSync(histPath, 'utf8').split('\n').filter((l) => l && !l.includes(`"date":"${date}"`))
       : [];
     for (const r of ranked)
-      lines.push(JSON.stringify({ date, symbol: r.symbol, price: r.price, mA: r.mA, mB: r.mB, mC: r.mC, mD: r.mD, mW: r.mW, mX: r.mX, mY: r.mY, mZ: r.mZ, mS: r.mS }));
+      lines.push(JSON.stringify({ date, symbol: r.symbol, price: r.price, mA: r.mA, mB: r.mB, mC: r.mC, mD: r.mD, mW: r.mW, mX: r.mX, mY: r.mY, mZ: r.mZ, mS: r.mS, mI: r.mI, mF: r.mF }));
     fs.writeFileSync(histPath, lines.join('\n') + '\n');
 
     // ---- mode scorecard: open each mode's #1 pick, resolve open positions ----
@@ -110,7 +113,7 @@ async function main() {
   const topBy = (key) => [...ranked].sort((a, b) => b[key] - a[key]).slice(0, o.top);
   console.log(`# ${date}  (${ranked.length} names, $500M-$50B)  -> ${dailyPath}`);
   console.log(`# report -> ${rep.out}`);
-  const labels = { W: 'W:thrust★', S: 'S:sustained⊥', Z: 'Z:consensus', X: 'X:breakout' };
+  const labels = { W: 'W:thrust★', S: 'S:sustnd⊥', Z: 'Z:consns', X: 'X:brkout', I: 'I:impact', F: 'F:fomo' };
   console.log(pad('RANK', 5) + TRACKED_MODES.map((m) => pad(labels[m], 15)).join(''));
   const cols = Object.fromEntries(TRACKED_MODES.map((m) => [m, topBy(MODE_KEYS[m])]));
   const fmt = (r, k) => (r ? `${r.symbol} ${r[k] >= 0 ? '+' : ''}${r[k]}` : '');

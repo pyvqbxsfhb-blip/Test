@@ -71,9 +71,9 @@ function trendChart(days, latest) {
 
 function table(rows) {
   const body = rows
-    .map((r, i) => `<tr><td>${i + 1}</td><td class="mono">${esc(r.symbol)}</td><td class="num d">${sg(r.mW)}</td><td class="num s">${sg(r.mS)}</td><td class="num">${sg(r.mZ)}</td><td class="num">${sg(r.mX)}</td><td class="num">$${(r.price ?? 0).toFixed(2)}</td><td class="num">${(r.changePct >= 0 ? '+' : '')}${(r.changePct ?? 0).toFixed(1)}%</td><td>${esc(r.sector || '')}</td></tr>`)
+    .map((r, i) => `<tr><td>${i + 1}</td><td class="mono">${esc(r.symbol)}</td><td class="num d">${sg(r.mW)}</td><td class="num s">${sg(r.mS)}</td><td class="num">${sg(r.mZ)}</td><td class="num">${sg(r.mX)}</td><td class="num">${sg(r.mI)}</td><td class="num">${sg(r.mF)}</td><td class="num">$${(r.price ?? 0).toFixed(2)}</td><td class="num">${(r.changePct >= 0 ? '+' : '')}${(r.changePct ?? 0).toFixed(1)}%</td><td>${esc(r.sector || '')}</td></tr>`)
     .join('\n');
-  return `<div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Ticker</th><th>W★</th><th>S⊥</th><th>Z</th><th>X</th><th>Price</th><th>Chg</th><th>Sector</th></tr></thead><tbody>${body}</tbody></table></div>`;
+  return `<div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Ticker</th><th>W★</th><th>S⊥</th><th>Z</th><th>X</th><th>I</th><th>F</th><th>Price</th><th>Chg</th><th>Sector</th></tr></thead><tbody>${body}</tbody></table></div>`;
 }
 
 function recommendation(rows) {
@@ -92,6 +92,8 @@ function recsByMode(names, n = 8) {
     ['S · sustained ⊥', 'mS'],
     ['Z · consensus', 'mZ'],
     ['X · breakout', 'mX'],
+    ['I · impact', 'mI'],
+    ['F · fomo', 'mF'],
   ];
   const cols = modes.map(([label, key]) => ({
     label,

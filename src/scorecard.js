@@ -9,12 +9,12 @@ export const MAX_DAYS = 20; // trading days
 // You capture an overnight price but realistically fill ~5% higher at the open,
 // so the assumed buy = capture * (1 + ENTRY_SLIP), and gains are measured from it.
 export const ENTRY_SLIP = 0.05;
-export const MODE_KEYS = { A: 'mA', B: 'mB', C: 'mC', D: 'mD', W: 'mW', X: 'mX', Y: 'mY', Z: 'mZ', S: 'mS' };
+export const MODE_KEYS = { A: 'mA', B: 'mB', C: 'mC', D: 'mD', W: 'mW', X: 'mX', Y: 'mY', Z: 'mZ', S: 'mS', I: 'mI', F: 'mF' };
 export const MODE_LIST = Object.keys(MODE_KEYS);
 // The lean, genuinely-distinct set we actually TRACK (open positions / score):
-// W thrust · S sustained (orthogonal) · Z consensus · X breakout.
-// A/B/C/D/Y are still computed (Z's consensus base) but retired from tracking.
-export const TRACKED_MODES = ['W', 'S', 'Z', 'X'];
+// W thrust · S sustained · Z consensus · X breakout · I impact (magnitude) ·
+// F fomo (crowd-chase proxy). A/B/C/D/Y still computed (Z base) but not tracked.
+export const TRACKED_MODES = ['W', 'S', 'Z', 'X', 'I', 'F'];
 
 export function loadPositions(dir) {
   const p = path.join(dir, 'positions.jsonl');

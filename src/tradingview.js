@@ -33,6 +33,8 @@ export const COLUMNS = [
   'SMA200',
   'float_shares_percent_current',
   'Volatility.D',
+  'Value.Traded', // today's traded dollar value (impact/magnitude)
+  'gap', // opening gap % (FOMO chase signal)
 ];
 
 function rowToObj(item) {
@@ -67,6 +69,8 @@ function rowToObj(item) {
     sma200: o['SMA200'],
     floatPct: o['float_shares_percent_current'],
     volatilityD: o['Volatility.D'],
+    valueTraded: o['Value.Traded'],
+    gap: o['gap'],
   };
 }
 

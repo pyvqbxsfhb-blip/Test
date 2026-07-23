@@ -78,7 +78,7 @@ async function main() {
   const pad = (s, n) => String(s).padEnd(n).slice(0, n);
   console.log(pad('MODE', 14) + pad('Spearman', 11) + pad('top10 avg move', 16) + 'rest avg move');
   console.log('-'.repeat(60));
-  const modes = [['A: increment', 'mA'], ['B: balanced', 'mB'], ['C: sustainable', 'mC'], ['D: refined', 'mD'], ['W: early', 'mW'], ['X: breakout', 'mX'], ['Y: pullback', 'mY'], ['Z: consensus', 'mZ'], ['S: sustained', 'mS']];
+  const modes = [['A: increment', 'mA'], ['B: balanced', 'mB'], ['C: sustainable', 'mC'], ['D: refined', 'mD'], ['W: early', 'mW'], ['X: breakout', 'mX'], ['Y: pullback', 'mY'], ['Z: consensus', 'mZ'], ['S: sustained', 'mS'], ['I: impact', 'mI'], ['F: fomo', 'mF']];
   const results = [];
   for (const [label, key] of modes) {
     const valid = rows.filter((r) => r[key] != null);
